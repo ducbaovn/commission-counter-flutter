@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:casino/base/di/locator.dart';
+import 'package:casino/base/base_screen.dart';
+
+class ${ScreenName}Screen extends StatefulWidget {
+  @override
+  _${ScreenName}ScreenState createState() => _${ScreenName}ScreenState();
+}
+
+class _${ScreenName}ScreenState extends BaseScreen<${ScreenName}Screen> {
+  ${ViewModelName}ViewModel ${ViewModelName}ViewModel = locator<>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => ${ViewModelName}ViewModel,
+      child: Consumer<${ViewModelName}ViewModel>(
+        builder: (context, ${ViewModelName}ViewModel, child) {
+          return Container();
+        },
+      ),
+    );
+  }
+}

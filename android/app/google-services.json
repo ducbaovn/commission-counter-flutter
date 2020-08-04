@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "940145850715",
+    "firebase_url": "https://casino-mvp.firebaseio.com",
+    "project_id": "casino-mvp",
+    "storage_bucket": "casino-mvp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940145850715:android:0c25b0692d51a6c15cc27e",
+        "android_client_info": {
+          "package_name": "com.yd.casino"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940145850715-mqg5f2m8m1glaq67i2b3lgrg11jcsfve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbXzdcWbtGIzaZEOOwQBUg3MaCf7Apo5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940145850715-mqg5f2m8m1glaq67i2b3lgrg11jcsfve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
