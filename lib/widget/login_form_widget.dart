@@ -1,11 +1,11 @@
-import 'package:casino/feature/auth/reset_password/reset_password_screen.dart';
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_dimen.dart';
-import 'package:casino/resources/app_font.dart';
-import 'package:casino/resources/app_lang.dart';
-import 'package:casino/util/ui_util.dart';
-import 'package:casino/util/validate_util.dart';
-import 'package:casino/widget/app_textfield_widget.dart';
+import 'package:commission_counter/feature/auth/reset_password/reset_password_screen.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/resources/app_lang.dart';
+import 'package:commission_counter/util/ui_util.dart';
+import 'package:commission_counter/util/validate_util.dart';
+import 'package:commission_counter/widget/app_textfield_widget.dart';
 import 'package:flutter/material.dart';
 
 import 'app_button_widget.dart';
@@ -22,7 +22,7 @@ class LoginFormWidget extends StatefulWidget {
 class LoginFormWidgetState extends State<LoginFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
-  String _email, _password;
+  String _username, _password;
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +33,14 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         child: Column(
           children: <Widget>[
             AppTextFieldWidget(
-              textHint: UiUtil.getStringFromRes(AppLang.common_email, context),
-              inputType: TextInputType.emailAddress,
-              prefixIcon: Icon(Icons.email),
-              onSaved: (email) {
-                _email = email;
+              textHint:
+                  UiUtil.getStringFromRes(AppLang.common_username, context),
+              inputType: TextInputType.text,
+              prefixIcon: Icon(Icons.person_outline),
+              onSaved: (username) {
+                _username = username;
               },
-              validator: _validateEmail,
+              validator: _validateUsername,
             ),
             SizedBox(height: AppDimen.app_margin),
             AppTextFieldWidget(
@@ -82,14 +83,11 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 
-  String _validateEmail(String email) {
+  String _validateUsername(String email) {
     if (ValidateUtil.isNullOrEmpty(email)) {
-      return UiUtil.getStringFromRes(AppLang.error_email_empty, context);
+      return UiUtil.getStringFromRes(AppLang.error_username_empty, context);
     }
 
-    if (!ValidateUtil.isValidEmail(email)) {
-      return UiUtil.getStringFromRes(AppLang.error_email_invalid, context);
-    }
     return null;
   }
 
@@ -105,7 +103,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (widget.onSubmitData != null) {
-        widget.onSubmitData(_email, _password);
+        widget.onSubmitData(_username, _password);
       }
     } else {
       setState(() {

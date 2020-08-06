@@ -1,10 +1,12 @@
 class AppLang {
   static const common_email = "common_email";
+  static const common_username = "common_username";
   static const common_password = "common_password";
   static const common_error = "common_error";
   static const common_re_try = "common_re_try";
   static const common_login_button = "common_login_button";
   static const error_email_empty = "error_email_empty";
+  static const error_username_empty = "error_username_empty";
   static const error_email_invalid = "error_email_invalid";
   static const error_password_empty = "error_password_empty";
   static const common_dialog_confirmation = "common_dialog_confirmation";

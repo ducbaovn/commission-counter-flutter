@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:casino/logger/app_logger.dart';
-import 'package:casino/type/view_state.dart';
+import 'package:commission_counter/logger/app_logger.dart';
+import 'package:commission_counter/type/view_state.dart';
 
 import 'api_response.dart';
 

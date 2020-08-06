@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:casino/resources/app_color.dart';
+import 'package:commission_counter/resources/app_color.dart';
 
 class AppStyle {
   static var appTheme = ThemeData(

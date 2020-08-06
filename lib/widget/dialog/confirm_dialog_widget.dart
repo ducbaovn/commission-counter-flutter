@@ -1,9 +1,9 @@
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_dimen.dart';
-import 'package:casino/resources/app_font.dart';
-import 'package:casino/resources/app_lang.dart';
-import 'package:casino/util/ui_util.dart';
-import 'package:casino/widget/dialog/base_dialog_widget.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/resources/app_lang.dart';
+import 'package:commission_counter/util/ui_util.dart';
+import 'package:commission_counter/widget/dialog/base_dialog_widget.dart';
 import 'package:flutter/material.dart';
 
 class ConfirmDialogWidget extends BaseDialogWidget {

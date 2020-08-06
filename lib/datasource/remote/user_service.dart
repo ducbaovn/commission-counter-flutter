@@ -1,4 +1,4 @@
-import 'package:casino/base/api_response.dart';
+import 'package:commission_counter/base/api_response.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserService {

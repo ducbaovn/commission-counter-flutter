@@ -1,5 +1,5 @@
-import 'package:casino/localization/app_translations.dart';
-import 'package:casino/resources/app_color.dart';
+import 'package:commission_counter/localization/app_translations.dart';
+import 'package:commission_counter/resources/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 

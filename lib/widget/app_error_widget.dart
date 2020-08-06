@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:casino/localization/app_translations.dart';
-import 'package:casino/resources/app_dimen.dart';
-import 'package:casino/resources/app_drawable.dart';
-import 'package:casino/resources/app_lang.dart';
+import 'package:commission_counter/localization/app_translations.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/resources/app_drawable.dart';
+import 'package:commission_counter/resources/app_lang.dart';
 
 class AppErrorWidget extends StatelessWidget {
   final VoidCallback onRetry;

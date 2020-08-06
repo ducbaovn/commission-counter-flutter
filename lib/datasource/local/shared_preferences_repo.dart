@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:casino/localization/application.dart';
+import 'package:commission_counter/localization/application.dart';
 import 'package:uuid/uuid.dart';
+import 'package:crypto/crypto.dart';
 
 class SharedPreferencesRepository {
   String _TOKEN_KEY = "TOKEN_KEY";
@@ -8,6 +11,7 @@ class SharedPreferencesRepository {
   String _DEVICE_TOKEN = "_DEVICE_TOKEN";
   String _DEVICE_ID = "_DEVICE_ID";
   String _IS_FIRST_TIME = "_IS_FIRST_TIME";
+  String _PASSWORD = "_PASSWORD";
 
   Future<bool> setToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -60,10 +64,22 @@ class SharedPreferencesRepository {
     return prefs.get(_IS_FIRST_TIME);
   }
 
+  Future<bool> setPassword(String password) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return await prefs.setString(
+        _PASSWORD, md5.convert(utf8.encode(password)).toString());
+  }
+
+  Future<String> getPassword() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_PASSWORD);
+  }
+
   Future<void> clearUserInfo() async {
     Future.wait([
       setToken(null),
       setDeviceToken(null),
+      setPassword(null),
     ]);
   }
 }

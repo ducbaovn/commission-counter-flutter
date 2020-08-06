@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:casino/localization/app_translations_delegate.dart';
+import 'package:commission_counter/localization/app_translations_delegate.dart';
 import 'package:flutter/material.dart';
 
 const VN_CODE = 'vi';

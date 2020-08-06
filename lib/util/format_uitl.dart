@@ -1,4 +1,4 @@
-import 'package:casino/logger/app_logger.dart';
+import 'package:commission_counter/logger/app_logger.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 class FormatUtil {

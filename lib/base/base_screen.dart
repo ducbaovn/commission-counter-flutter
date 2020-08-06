@@ -1,19 +1,19 @@
-import 'package:casino/widget/dialog/confirm_dialog_widget.dart';
-import 'package:casino/widget/dialog/error_dialog_widget.dart';
-import 'package:casino/widget/dialog/success_dialog_widget.dart';
+import 'package:commission_counter/widget/dialog/confirm_dialog_widget.dart';
+import 'package:commission_counter/widget/dialog/error_dialog_widget.dart';
+import 'package:commission_counter/widget/dialog/success_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:casino/base/base_viewmodel.dart';
-import 'package:casino/localization/app_translations.dart';
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_font.dart';
-import 'package:casino/resources/app_lang.dart';
-import 'package:casino/type/view_state.dart';
-import 'package:casino/widget/app_empty_widget.dart';
-import 'package:casino/widget/app_error_widget.dart';
-import 'package:casino/widget/app_loading_widget.dart';
-import 'package:casino/widget/progress_dialog.dart';
+import 'package:commission_counter/base/base_viewmodel.dart';
+import 'package:commission_counter/localization/app_translations.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/resources/app_lang.dart';
+import 'package:commission_counter/type/view_state.dart';
+import 'package:commission_counter/widget/app_empty_widget.dart';
+import 'package:commission_counter/widget/app_error_widget.dart';
+import 'package:commission_counter/widget/app_loading_widget.dart';
+import 'package:commission_counter/widget/progress_dialog.dart';
 
 abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
   ProgressDialog pr;

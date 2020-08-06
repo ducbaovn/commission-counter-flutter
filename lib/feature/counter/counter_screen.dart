@@ -1,9 +1,9 @@
-import 'package:casino/base/base_screen.dart';
-import 'package:casino/base/di/locator.dart';
-import 'package:casino/feature/auth/login/login_screen.dart';
-import 'package:casino/feature/counter/counter_viewmodel.dart';
-import 'package:casino/widget/app_bar_widget.dart';
-import 'package:casino/widget/input_customer_code_form_widget.dart';
+import 'package:commission_counter/base/base_screen.dart';
+import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/feature/auth/login/login_screen.dart';
+import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
+import 'package:commission_counter/widget/app_bar_widget.dart';
+import 'package:commission_counter/widget/input_customer_code_form_widget.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
