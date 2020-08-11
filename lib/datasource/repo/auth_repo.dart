@@ -5,10 +5,13 @@ import 'package:commission_counter/datasource/local/shared_preferences_repo.dart
 import 'package:commission_counter/schema/request/login_request.dart';
 import 'package:commission_counter/schema/user.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepo extends BaseRepository {
   SharedPreferencesRepository _sharedPreferencesRepository =
       locator<SharedPreferencesRepository>();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<APIResponse<User>> login(LoginRequest loginRequest) async {
     try {
@@ -17,6 +20,8 @@ class AuthRepo extends BaseRepository {
       ///Save token and password to local.
       _sharedPreferencesRepository.setToken(res.token);
       _sharedPreferencesRepository.setPassword(loginRequest.password);
+
+      _auth.signInWithCustomToken(token: res.token);
 
       return APIResponse<User>(data: res);
     } catch (error) {

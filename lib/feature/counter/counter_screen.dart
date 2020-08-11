@@ -2,9 +2,14 @@ import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
 import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/schema/seat.dart';
+import 'package:commission_counter/util/ui_util.dart';
 import 'package:commission_counter/widget/app_bar_widget.dart';
+import 'package:commission_counter/widget/bid_price_widget.dart';
+import 'package:commission_counter/widget/bottom_navigate_widget.dart';
 import 'package:commission_counter/widget/input_customer_code_form_widget.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:route_annotation/route_annotation.dart';
@@ -21,18 +26,18 @@ class CounterScreen extends StatefulWidget {
 }
 
 class _CounterScreenState extends BaseScreen<CounterScreen> {
-  CounterViewModel dealerViewModel = locator<CounterViewModel>();
+  CounterViewModel counterViewModel = locator<CounterViewModel>();
 
   @override
   void initState() {
-    // TODO: implement initState
+    counterViewModel.generateNewSeats();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => dealerViewModel,
+      create: (context) => counterViewModel,
       child: Consumer<CounterViewModel>(
         builder: (context, dealerViewModel, child) {
           return Scaffold(
@@ -45,12 +50,28 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
                 ),
               ],
             ),
-            body: DoubleBackToCloseApp(
-              child: Container(
-                child: _buildSeatLayout(),
-              ),
-              snackBar: const SnackBar(
-                content: Text('Tap again to close app'),
+            body: Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView(
+                      children: <Widget>[
+                        Container(
+                          child: _buildSeatLayout(),
+                        ),
+                        SizedBox(height: 20),
+                        BidPriceWidget(
+                          values: [25, 50, 100],
+                          onItemClick: (int value) {},
+                        ),
+                      ],
+                    ),
+                  ),
+                  UiUtil.buildLine(),
+                  BottomNavigateWidget(
+                    onReset: () {},
+                  ),
+                ],
               ),
             ),
           );
@@ -59,12 +80,18 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
     );
   }
 
-  void _penInputCustomerCodeForm() {
+  void _openInputCustomerCodeForm(Seat seat) {
     showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         builder: (BuildContext context) {
-          return InputCustomerSeatFormWidget(onSubmitData: (double price) {});
+          return InputCustomerSeatFormWidget(
+            userCode: seat.userCode ?? '',
+            onSubmitData: (String userCode) {
+              counterViewModel.setUserCodeForSeat(seat.index, userCode);
+              Navigator.pop(context);
+            },
+          );
         });
   }
 
@@ -72,32 +99,51 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
     showConfirmDialog(
         content: 'Are you sure you want to log out?',
         onConfirm: () {
-          dealerViewModel.logOut();
+          counterViewModel.logOut();
           LoginScreen.startAndRemove(context);
         });
   }
 
   Widget _buildSeatLayout() {
-    return GridView.count(
-      // Create a grid with 2 columns. If you change the scrollDirection to
-      // horizontal, this produces 2 rows.
-      crossAxisCount: 3,
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
-      // Generate 100 widgets that display their index in the List.
-      children: List.generate(9, (index) {
-        return InkWell(
-          onTap: () {
-            _penInputCustomerCodeForm();
-          },
-          child: Container(
-            child: Text(
-              'Item $index',
-              style: Theme.of(context).textTheme.headline5,
-            ),
-          ),
-        );
-      }),
+    return Container(
+      child: GridView.count(
+        crossAxisCount: 3,
+        mainAxisSpacing: 2,
+        crossAxisSpacing: 2,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        children: counterViewModel.seats
+            .map((seatItem) => Card(
+                  color:
+                      seatItem.isSelected ? AppColor.mainColor : AppColor.white,
+                  child: InkWell(
+                    onTap: () {
+                      _openInputCustomerCodeForm(seatItem);
+                    },
+                    child: Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '${seatItem.index}',
+                            style:
+                                Theme.of(context).textTheme.headline5.copyWith(
+                                      fontFamily: AppFont.nunito_bold,
+                                    ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(seatItem.userCode ?? '',
+                              style: TextStyle(
+                                fontFamily: AppFont.nunito_regular,
+                                fontSize: 12,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ))
+            .toList(),
+      ),
     );
   }
 }

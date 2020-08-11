@@ -9,9 +9,13 @@ import 'package:flutter/material.dart';
 import 'app_button_widget.dart';
 
 class InputCustomerSeatFormWidget extends StatefulWidget {
-  final Function(double) onSubmitData;
+  final String userCode;
+  final Function(String) onSubmitData;
 
-  InputCustomerSeatFormWidget({this.onSubmitData});
+  InputCustomerSeatFormWidget({
+    this.onSubmitData,
+    this.userCode = '',
+  });
 
   @override
   InputCustomerSeatFormWidgetState createState() =>
@@ -23,7 +27,16 @@ class InputCustomerSeatFormWidgetState
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _customerCodeController = TextEditingController();
   bool _autoValidate = false;
-  String _price;
+  String _userCode;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _userCode = widget.userCode;
+    _customerCodeController.text = widget.userCode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +71,7 @@ class InputCustomerSeatFormWidgetState
                         textHint: 'Customer code',
                         controller: _customerCodeController,
                         onSaved: (String price) {
-                          _price = price;
+                          _userCode = price;
                         },
                       ),
                     ),
@@ -103,7 +116,7 @@ class InputCustomerSeatFormWidgetState
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (widget.onSubmitData != null) {
-        widget.onSubmitData(double.parse(_price));
+        widget.onSubmitData(_userCode);
       }
     } else {
       setState(() {
