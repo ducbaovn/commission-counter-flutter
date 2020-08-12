@@ -1,51 +1,35 @@
 import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/util/format_uitl.dart';
 import 'package:flutter/material.dart';
 
-class BidPriceWidget extends StatefulWidget {
-  final List<int> values;
-  final int initTotal;
-  final Function(int) onItemClick;
-
+class BidPriceWidget extends StatelessWidget {
+  final List<double> values;
+  final double totalAmount;
+  final Function(double) onItemClick;
 
   BidPriceWidget({
     @required this.values,
     this.onItemClick,
-    this.initTotal = 0,
+    this.totalAmount = 0,
   }) : assert(values != null);
-
-  @override
-  _BidPriceWidgetState createState() => _BidPriceWidgetState();
-}
-
-class _BidPriceWidgetState extends State<BidPriceWidget> {
-  int initTotal = 0;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    initTotal = widget.initTotal;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: <Widget>[
-          Row(
-            children:
-                widget.values.map((value) => _buildPricingItem(value)).toList(),
-          ),
-          SizedBox(height: 20),
           _buildTotalBidPrice(),
+          SizedBox(height: 10),
+          Row(
+            children: values.map((value) => _buildPricingItem(value)).toList(),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildPricingItem(int value) {
+  Widget _buildPricingItem(double value) {
     return Expanded(
       child: Container(
         margin: EdgeInsets.only(right: 1),
@@ -54,16 +38,16 @@ class _BidPriceWidgetState extends State<BidPriceWidget> {
         child: Material(
           child: InkWell(
             onTap: () {
-              if (widget.onItemClick != null) {
-                setState(() {
-                  initTotal += value;
-                });
-                widget.onItemClick(initTotal);
+              if (onItemClick != null) {
+                onItemClick(value);
               }
             },
             child: Center(
               child: Text(
-                value.toString(),
+                FormatUtil.formatCurrency(
+                  value ?? 0,
+                  hasUnit: false,
+                ),
                 style: TextStyle(
                   fontSize: 30,
                   fontFamily: AppFont.nunito_bold,
@@ -80,7 +64,10 @@ class _BidPriceWidgetState extends State<BidPriceWidget> {
   Widget _buildTotalBidPrice() {
     return Center(
       child: Text(
-        initTotal.toString(),
+        FormatUtil.formatCurrency(
+          totalAmount?.toDouble() ?? 0,
+          hasUnit: false,
+        ),
         style: TextStyle(
           fontSize: 32,
           fontFamily: AppFont.nunito_bold,

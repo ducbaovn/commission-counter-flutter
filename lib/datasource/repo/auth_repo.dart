@@ -8,8 +8,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepo extends BaseRepository {
-  SharedPreferencesRepository _sharedPreferencesRepository =
-      locator<SharedPreferencesRepository>();
+  SharedPreferencesRepo _sharedPreferencesRepo =
+      locator<SharedPreferencesRepo>();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -18,11 +18,12 @@ class AuthRepo extends BaseRepository {
       User res = await apiClient.authService.login(loginRequest);
 
       ///Save token and password to local.
-      _sharedPreferencesRepository.setToken(res.token);
-      _sharedPreferencesRepository.setPassword(loginRequest.password);
-
-      _auth.signInWithCustomToken(token: res.token);
-
+      Future.wait([
+        _sharedPreferencesRepo.setToken(res.token),
+        _sharedPreferencesRepo.setPassword(loginRequest.password),
+        _sharedPreferencesRepo.setUser(res),
+        _auth.signInWithCustomToken(token: res.token),
+      ]);
       return APIResponse<User>(data: res);
     } catch (error) {
       if (error is DioError && error.response != null) {
@@ -39,6 +40,7 @@ class AuthRepo extends BaseRepository {
   }
 
   Future<void> logOut() async {
-    return await _sharedPreferencesRepository.clearUserInfo();
+    _auth.signOut();
+    return await _sharedPreferencesRepo.clearUserInfo();
   }
 }

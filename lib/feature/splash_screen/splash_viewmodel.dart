@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class SplashScreenViewModel extends BaseViewModel {
   UserRepo _userRepo = locator<UserRepo>();
 
-  Future<FirebaseUser> getUser() async {
+  Future<FirebaseUser> getFirebaseUser() async {
     return await _userRepo.getCurrentUser();
   }
 }

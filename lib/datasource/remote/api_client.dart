@@ -2,20 +2,24 @@ import 'dart:io';
 
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/datasource/local/shared_preferences_repo.dart';
+import 'package:commission_counter/datasource/remote/order_service.dart';
+import 'package:commission_counter/datasource/remote/store_service.dart';
 import 'package:commission_counter/datasource/remote/user_service.dart';
+import 'package:commission_counter/logger/app_logger.dart';
 import 'package:dio/dio.dart';
-import '../../logger/app_logger.dart';
 import 'auth_service.dart';
 
 class ApiClient {
   final dio = Dio();
 
-  SharedPreferencesRepository _sharedPreferencesRepository =
-      locator<SharedPreferencesRepository>();
+  SharedPreferencesRepo _sharedPreferencesRepository =
+      locator<SharedPreferencesRepo>();
 
   //Service
   AuthService authService;
   UserService userService;
+  OrderService orderService;
+  StoreService storeService;
 
   ApiClient() {
     _setUpDio();
@@ -23,7 +27,8 @@ class ApiClient {
   }
 
   void _setUpDio() {
-    dio.options.baseUrl = 'https://asia-east2-commission-counter.cloudfunctions.net';
+    dio.options.baseUrl =
+        'https://asia-east2-commission-counter.cloudfunctions.net';
     dio.options.connectTimeout = 20000;
     dio.options.receiveTimeout = 20000;
     dio.options.contentType = 'application/json';
@@ -69,5 +74,7 @@ class ApiClient {
   void _setUpService() {
     authService = AuthService(dio, baseUrl: dio.options.baseUrl);
     userService = UserService();
+    orderService = OrderService();
+    storeService = StoreService();
   }
 }

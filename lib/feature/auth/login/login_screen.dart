@@ -85,6 +85,7 @@ class _LoginScreenState extends BaseAuthScreen<LoginScreen> {
     hideLoadingDialog();
 
     if (res.isSuccess) {
+      sessionViewModel.setUser(res.data);
       CounterScreen.startAndRemove(context);
     } else {
       showErrorDialog(content: res.message);

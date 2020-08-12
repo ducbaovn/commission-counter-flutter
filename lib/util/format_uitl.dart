@@ -1,24 +1,22 @@
-import 'package:commission_counter/logger/app_logger.dart';
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 class FormatUtil {
-  static String formatCurrency(double amount) {
-    try {
-      FlutterMoneyFormatter fmf = FlutterMoneyFormatter(
-          amount: amount,
-          settings: MoneyFormatterSettings(
-            symbol: 'VND',
-            thousandSeparator: '.',
-            decimalSeparator: ',',
-            symbolAndNumberSeparator: ' ',
-            fractionDigits: 3,
-            compactFormatType: CompactFormatType.long,
-          ));
-
-      return '${fmf.output.symbolOnRight}';
-    } catch (e) {
-      AppLogger.e(e);
-      return '';
+  static String formatCurrency(double amount, {bool hasUnit = true}) {
+    if (amount == null) {
+      return 'N/A';
     }
+    FlutterMoneyFormatter fmf = FlutterMoneyFormatter(
+        amount: amount,
+        settings: MoneyFormatterSettings(
+          thousandSeparator: ',',
+          decimalSeparator: '.',
+          symbolAndNumberSeparator: ' ',
+          fractionDigits: 3,
+          compactFormatType: CompactFormatType.short,
+        ));
+
+    return hasUnit
+        ? '${fmf.output.withoutFractionDigits} đ'
+        : fmf.output.withoutFractionDigits;
   }
 }

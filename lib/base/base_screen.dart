@@ -1,8 +1,10 @@
+import 'package:commission_counter/share_viewmodel/session_viewmodel.dart';
 import 'package:commission_counter/widget/dialog/confirm_dialog_widget.dart';
 import 'package:commission_counter/widget/dialog/error_dialog_widget.dart';
 import 'package:commission_counter/widget/dialog/success_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:commission_counter/base/base_viewmodel.dart';
 import 'package:commission_counter/localization/app_translations.dart';
@@ -19,6 +21,12 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
   ProgressDialog pr;
 
   String getStringFromRes(String key) => AppTranslations.of(context).text(key);
+
+  SessionViewModel get sessionViewModel =>
+      Provider.of<SessionViewModel>(context, listen: false);
+
+  SessionViewModel get sessionViewModelListen =>
+      Provider.of<SessionViewModel>(context, listen: true);
 
   Widget buildTopSpacing(double size) {
     return SizedBox(

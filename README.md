@@ -51,3 +51,5 @@
 
 
 pub global activate devtools
+
+flutter pub cache repair 

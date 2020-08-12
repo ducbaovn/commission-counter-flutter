@@ -5,6 +5,7 @@
   "common_error": "Have error",
   "common_re_try": "Try again",
   "common_login_button": "Login",
+  "common_confirm": "Confirm",
   "error_email_empty": "Please input your email",
   "error_email_invalid": "Your email is not valid",
   "error_username_empty": "Please input your username",
@@ -23,5 +24,10 @@
   "common_error_title": "Error",
   "common_close_button": "Close",
   "common_success_title": "Success",
-  "reset_password_success": "Please check your email"
+  "reset_password_success": "Please check your email",
+  "reset_seat_confirm": "Are you sure you want to reset this seat?",
+  "log_out_confirm": "Are you sure you want to log out?",
+  "custom_code": "Customer code",
+  "error_user_code_empty": "Please input customer code",
+  "counter_screen_title": "Counter"
 }

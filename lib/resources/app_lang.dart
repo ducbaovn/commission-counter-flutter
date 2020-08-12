@@ -5,6 +5,7 @@ class AppLang {
   static const common_error = "common_error";
   static const common_re_try = "common_re_try";
   static const common_login_button = "common_login_button";
+  static const common_confirm = "common_confirm";
   static const error_email_empty = "error_email_empty";
   static const error_username_empty = "error_username_empty";
   static const error_email_invalid = "error_email_invalid";
@@ -24,5 +25,9 @@ class AppLang {
   static const common_close_button = "common_close_button";
   static const common_success_title = "common_success_title";
   static const reset_password_success = "reset_password_success";
-
+  static const reset_seat_confirm = "reset_seat_confirm";
+  static const log_out_confirm = "log_out_confirm";
+  static const custom_code = "custom_code";
+  static const error_user_code_empty = "error_user_code_empty";
+  static const counter_screen_title = "counter_screen_title";
 }

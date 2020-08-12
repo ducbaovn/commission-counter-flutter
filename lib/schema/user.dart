@@ -7,12 +7,22 @@ part 'user.g.dart';
 @JsonSerializable()
 class User {
   String username;
+  String name;
   String role;
+  String adminId;
+  String storeId;
+  String storeOwnerId;
+  String agentId;
   String token;
 
   User({
     this.username,
+    this.name,
     this.role,
+    this.adminId,
+    this.storeId,
+    this.storeOwnerId,
+    this.agentId,
     this.token,
   });
 

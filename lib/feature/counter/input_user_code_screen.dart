@@ -1,30 +1,38 @@
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:commission_counter/base/api_response.dart';
+import 'package:commission_counter/base/base_screen.dart';
+import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/feature/counter/input_user_code_viewmodel.dart';
+import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:commission_counter/resources/app_font.dart';
 import 'package:commission_counter/resources/app_lang.dart';
+import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/type/view_state.dart';
 import 'package:commission_counter/util/ui_util.dart';
 import 'package:commission_counter/util/validate_util.dart';
+import 'package:commission_counter/widget/app_button_widget.dart';
 import 'package:commission_counter/widget/app_textfield_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'app_button_widget.dart';
-
-class InputCustomerSeatFormWidget extends StatefulWidget {
+class InputUserCodeScreen extends StatefulWidget {
   final String userCode;
-  final Function(String) onSubmitData;
+  final Function(User) onSubmitData;
 
-  InputCustomerSeatFormWidget({
+  InputUserCodeScreen({
+    this.userCode,
     this.onSubmitData,
-    this.userCode = '',
   });
 
   @override
-  InputCustomerSeatFormWidgetState createState() =>
-      InputCustomerSeatFormWidgetState();
+  _InputUserCodeScreenState createState() => _InputUserCodeScreenState();
 }
 
-class InputCustomerSeatFormWidgetState
-    extends State<InputCustomerSeatFormWidget> {
+class _InputUserCodeScreenState extends BaseScreen<InputUserCodeScreen> {
+  InputUserCodeViewModel inputUserCodeViewModel =
+      locator<InputUserCodeViewModel>();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _customerCodeController = TextEditingController();
   bool _autoValidate = false;
@@ -41,6 +49,19 @@ class InputCustomerSeatFormWidgetState
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => inputUserCodeViewModel,
+      child: Consumer<InputUserCodeViewModel>(
+        builder: (context, inputUserCodeViewModel, child) {
+          return Container(
+            child: _buildMainView(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMainView() {
     return Container(
       child: Form(
         autovalidate: _autoValidate,
@@ -83,20 +104,44 @@ class InputCustomerSeatFormWidgetState
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
-                AppButtonWidget(
-                  label:
-                      UiUtil.getStringFromRes(AppLang.common_confirm, context),
-                  onPressed: () {
-                    _validateInputs();
-                  },
+                Visibility(
+                  visible: inputUserCodeViewModel.viewState == ViewState.Error,
+                  child: Text(
+                    inputUserCodeViewModel.errorMsg ?? '',
+                    style: TextStyle(
+                      color: AppColor.errorColor,
+                      fontSize: 12,
+                      fontFamily: AppFont.nunito_regular,
+                    ),
+                  ),
                 ),
+                SizedBox(height: 30),
+                inputUserCodeViewModel.viewState == ViewState.Loading
+                    ? Container(
+                        child: getLoadingView(),
+                      )
+                    : AppButtonWidget(
+                        label: UiUtil.getStringFromRes(
+                            AppLang.common_confirm, context),
+                        onPressed: () {
+                          _validateInputs();
+                        },
+                      ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _checkUserInfo(String userName) async {
+    APIResponse<User> res =
+        await inputUserCodeViewModel.checkUserInfo(userName);
+
+    if (res.isSuccess && widget.onSubmitData != null) {
+      widget.onSubmitData(res.data);
+    }
   }
 
   void _openScanner() async {
@@ -119,7 +164,7 @@ class InputCustomerSeatFormWidgetState
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (widget.onSubmitData != null) {
-        widget.onSubmitData(_userCode);
+        _checkUserInfo(_userCode);
       }
     } else {
       setState(() {

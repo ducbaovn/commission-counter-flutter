@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
 import 'package:commission_counter/feature/counter/counter_screen.dart';
+import 'package:commission_counter/schema/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -74,9 +75,10 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
   }
 
   void onDoneLoading() async {
-    FirebaseUser user = await splashViewModel.getUser();
+    FirebaseUser firebaseUser = await splashViewModel.getFirebaseUser();
 
-    if (user != null) {
+    if (firebaseUser != null) {
+      await sessionViewModel.getUser();
       CounterScreen.startAndRemove(context);
     } else {
       LoginScreen.startAndRemove(context);

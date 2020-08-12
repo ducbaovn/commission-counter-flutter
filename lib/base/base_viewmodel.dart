@@ -38,12 +38,12 @@ class BaseViewModel extends ChangeNotifier {
     setViewState(ViewState.Error);
   }
 
-//  void handleAPIResult(APIResponse response) {
-//    if (response.isSuccess) {
-//      stopLoading();
-//    } else {
-//      setErrorMsg(errorMsg);
-//      notifyError();
-//    }
-//  }
+  void handleAPIResult(APIResponse response) {
+    if (response.isSuccess) {
+      stopLoading();
+    } else {
+      setErrorMsg(response.message);
+      notifyError();
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:commission_counter/base/di/locator.dart';
-import 'package:commission_counter/feature/splash_screen/splash_viewmodel.dart';
 import 'package:commission_counter/localization/application.dart';
 import 'package:commission_counter/main.route.dart';
+import 'package:commission_counter/share_viewmodel/session_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -48,7 +48,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SplashScreenViewModel()),
+        ChangeNotifierProvider(create: (_) => SessionViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

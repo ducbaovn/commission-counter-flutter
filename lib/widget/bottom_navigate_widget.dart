@@ -24,7 +24,7 @@ class BottomNavigateWidget extends StatelessWidget {
                 }
               },
               child: Container(
-                height: 70,
+                height: 50,
                 child: Center(
                   child: Icon(Icons.arrow_back_ios),
                 ),
@@ -39,7 +39,7 @@ class BottomNavigateWidget extends StatelessWidget {
                 }
               },
               child: Container(
-                height: 70,
+                height: 50,
                 child: Center(
                   child: Icon(Icons.clear),
                 ),
@@ -54,7 +54,7 @@ class BottomNavigateWidget extends StatelessWidget {
                 }
               },
               child: Container(
-                height: 70,
+                height: 50,
                 child: Center(
                   child: Icon(Icons.arrow_forward_ios),
                 ),

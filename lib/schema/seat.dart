@@ -6,13 +6,17 @@ part 'seat.g.dart';
 class Seat {
   int index; // 1->9,
   String userCode;
+  String name;
+  String agentId;
   double price;
   bool isSelected;
 
   Seat({
     this.index,
     this.userCode,
+    this.agentId,
     this.price = 0,
+    this.name,
     this.isSelected = false,
   });
 
