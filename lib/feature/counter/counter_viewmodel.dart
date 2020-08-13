@@ -51,7 +51,7 @@ class CounterViewModel extends BaseViewModel {
     seats[index].userCode = user.username;
     seats[index].agentId = user.agentId;
     seats[index].name = user.name;
-    seats[index].isSelected = true;
+    seats[index].isSelected = false;
     notifyListeners();
   }
 
@@ -67,6 +67,7 @@ class CounterViewModel extends BaseViewModel {
 
   void resetSeat(int index) {
     seats[index].userCode = null;
+    seats[index].name = null;
     seats[index].isSelected = false;
     notifyListeners();
   }
@@ -123,7 +124,7 @@ class CounterViewModel extends BaseViewModel {
           adminId: user.adminId,
           amount: totalAmount / listCustomer.length,
           currency: store?.currency,
-          agentId: seat.agentId ?? 'Aa000',
+          agentId: seat.agentId,
           customerId: seat.userCode,
         ));
       }
