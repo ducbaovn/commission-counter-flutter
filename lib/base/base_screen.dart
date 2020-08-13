@@ -128,13 +128,11 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
       ),
     );
 
-    pr.show();
+    await pr.show();
   }
 
-  void hideLoadingDialog() {
-    if (pr != null && pr.isShowing()) {
-      pr.dismiss();
-    }
+  void hideLoadingDialog() async {
+    await pr.hide();
   }
 
   void showErrorDialog({

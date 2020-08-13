@@ -126,6 +126,7 @@ class CounterViewModel extends BaseViewModel {
           currency: store?.currency,
           agentId: seat.agentId,
           customerId: seat.userCode,
+          name: seat.name,
         ));
       }
     });

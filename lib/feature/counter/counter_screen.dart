@@ -4,6 +4,7 @@ import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
 import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
 import 'package:commission_counter/feature/counter/input_user_code_screen.dart';
+import 'package:commission_counter/logger/app_logger.dart';
 import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_font.dart';
 import 'package:commission_counter/resources/app_lang.dart';
@@ -200,6 +201,8 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
     APIResponse res = await counterViewModel.submitNewOrder();
 
     hideLoadingDialog();
+
+    AppLogger.d("I am done");
 
     if (!res.isSuccess) {
       showErrorDialog(content: res.message);

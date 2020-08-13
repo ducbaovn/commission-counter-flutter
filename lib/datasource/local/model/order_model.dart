@@ -1,21 +1,31 @@
-import 'package:commission_counter/datasource/local/model/order_model.dart';
+import 'package:commission_counter/schema/order.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'order.g.dart';
+part 'order_model.g.dart';
 
 @JsonSerializable()
-class Order {
+class OrderModel {
   String id;
+  @JsonKey(name: 'store_owner_id')
   String storeOwnerId;
+
+  @JsonKey(name: 'store_id')
   String storeId;
+
+  @JsonKey(name: 'admin_id')
   String adminId;
+
   String currency;
+
+  @JsonKey(name: 'updated_at')
   DateTime updatedAt;
+
+  @JsonKey(name: 'created_at')
   DateTime createdAt;
-  List<String> listCustomer;
+
   double amount;
 
-  Order({
+  OrderModel({
     this.id,
     this.storeOwnerId,
     this.storeId,
@@ -23,11 +33,11 @@ class Order {
     this.currency,
     this.updatedAt,
     this.createdAt,
-    this.listCustomer,
     this.amount,
   });
 
-  OrderModel get toOrderModel => OrderModel(
+  Order get toOrder => Order(
+        id: id,
         storeOwnerId: storeOwnerId,
         storeId: storeId,
         adminId: adminId,
@@ -37,7 +47,10 @@ class Order {
         createdAt: createdAt,
       );
 
-  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
+  static String tableName = 'orders';
 
-  Map<String, dynamic> toJson() => _$OrderToJson(this);
+  factory OrderModel.fromJson(Map<String, dynamic> json) =>
+      _$OrderModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
 }

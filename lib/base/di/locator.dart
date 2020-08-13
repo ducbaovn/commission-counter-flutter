@@ -3,6 +3,7 @@ import 'package:commission_counter/datasource/repo/order_repo.dart';
 import 'package:commission_counter/datasource/repo/store_repo.dart';
 import 'package:commission_counter/datasource/repo/user_repo.dart';
 import 'package:commission_counter/feature/auth/auth_viewmodel.dart';
+import 'package:commission_counter/feature/counter/counter_item_viewmodel.dart';
 import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
 import 'package:commission_counter/feature/counter/input_user_code_viewmodel.dart';
 import 'package:commission_counter/feature/report/report_viewmodel.dart';
@@ -28,6 +29,7 @@ void setUpInjector() {
   locator.registerFactory<SplashScreenViewModel>(() => SplashScreenViewModel());
   locator.registerFactory<AuthViewModel>(() => AuthViewModel());
   locator.registerFactory<CounterViewModel>(() => CounterViewModel());
+  locator.registerFactory<CounterItemViewModel>(() => CounterItemViewModel());
   locator.registerFactory<ReportViewModel>(() => ReportViewModel());
   locator
       .registerFactory<InputUserCodeViewModel>(() => InputUserCodeViewModel());
