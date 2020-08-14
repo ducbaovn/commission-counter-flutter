@@ -37,6 +37,8 @@ class CommissionModel {
 
   String name;
 
+  int seat;
+
   CommissionModel({
     this.id,
     this.storeOwnerId,
@@ -50,6 +52,7 @@ class CommissionModel {
     this.customerId,
     this.orderId,
     this.name,
+    this.seat,
   });
 
   Commission get toCommission => Commission(
@@ -65,6 +68,7 @@ class CommissionModel {
         customerId: customerId,
         orderId: orderId,
         name: name,
+        seat: seat,
       );
 
   static String tableName = 'commissions';

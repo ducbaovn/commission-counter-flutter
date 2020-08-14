@@ -18,12 +18,11 @@ class AuthRepo extends BaseRepository {
       User res = await apiClient.authService.login(loginRequest);
 
       ///Save token and password to local.
-      Future.wait([
-        _sharedPreferencesRepo.setToken(res.token),
-        _sharedPreferencesRepo.setPassword(loginRequest.password),
-        _sharedPreferencesRepo.setUser(res),
-        _auth.signInWithCustomToken(token: res.token),
-      ]);
+      await _sharedPreferencesRepo.setToken(res.token);
+      await _sharedPreferencesRepo.setPassword(loginRequest.password);
+      await _sharedPreferencesRepo.setUser(res);
+      await _auth.signInWithCustomToken(token: res.token);
+
       return APIResponse<User>(data: res);
     } catch (error) {
       if (error is DioError && error.response != null) {

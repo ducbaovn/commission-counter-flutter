@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigateWidget extends StatelessWidget {
+  final int currentIndex;
   final VoidCallback onNext;
   final VoidCallback onReset;
   final VoidCallback onBack;
 
   BottomNavigateWidget({
+    this.currentIndex = 0,
     this.onNext,
     this.onReset,
     this.onBack,
@@ -17,16 +19,19 @@ class BottomNavigateWidget extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-            child: InkWell(
-              onTap: () {
-                if (onBack != null) {
-                  onBack();
-                }
-              },
-              child: Container(
-                height: 50,
-                child: Center(
-                  child: Icon(Icons.arrow_back_ios),
+            child: Visibility(
+              visible: currentIndex > 0,
+              child: InkWell(
+                onTap: () {
+                  if (onBack != null) {
+                    onBack();
+                  }
+                },
+                child: Container(
+                  height: 50,
+                  child: Center(
+                    child: Icon(Icons.arrow_back_ios),
+                  ),
                 ),
               ),
             ),

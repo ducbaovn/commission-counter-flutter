@@ -60,23 +60,23 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   UiUtil.getStringFromRes(AppLang.common_login_button, context),
               onPressed: _validateInputs,
             ),
-            InkWell(
-              onTap: () {
-                ResetPasswordScreen.start(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Text(
-                  UiUtil.getStringFromRes(
-                      AppLang.common_forget_password, context),
-                  style: TextStyle(
-                    fontFamily: AppFont.nunito_regular,
-                    fontSize: 14,
-                    color: AppColor.mainColor,
-                  ),
-                ),
-              ),
-            )
+//            InkWell(
+//              onTap: () {
+//                ResetPasswordScreen.start(context);
+//              },
+//              child: Padding(
+//                padding: const EdgeInsets.all(20),
+//                child: Text(
+//                  UiUtil.getStringFromRes(
+//                      AppLang.common_forget_password, context),
+//                  style: TextStyle(
+//                    fontFamily: AppFont.nunito_regular,
+//                    fontSize: 14,
+//                    color: AppColor.mainColor,
+//                  ),
+//                ),
+//              ),
+//            )
           ],
         ),
       ),

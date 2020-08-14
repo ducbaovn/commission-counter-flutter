@@ -7,14 +7,19 @@ import 'package:commission_counter/schema/commission.dart';
 import 'package:commission_counter/schema/order.dart';
 
 class OrderRepo extends BaseRepository {
-  Future<APIResponse> submitOrder({
+  Future<APIResponse<Order>> createOrUpdateOrder({
     Order order,
     List<Commission> commissions,
   }) {
-    return apiClient.orderService.submitNewOrder(
-      order: order,
-      commissions: commissions,
-    );
+    return order.id == null
+        ? apiClient.orderService.createOrder(
+            order: order,
+            commissions: commissions,
+          )
+        : apiClient.orderService.updateOrder(
+            order: order,
+            commissions: commissions,
+          );
   }
 
   Future<APIResponse> updateOrder({

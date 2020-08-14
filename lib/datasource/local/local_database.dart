@@ -34,7 +34,7 @@ class DBProvider {
           "admin_id TEXT,"
           "currency TEXT,"
           "updated_at TEXT,"
-          "created_at INTEGER,"
+          "created_at TEXT,"
           "amount REAL"
           ")",
         ),
@@ -46,11 +46,12 @@ class DBProvider {
           "admin_id TEXT,"
           "currency TEXT,"
           "updated_at TEXT,"
-          "created_at INTEGER,"
+          "created_at TEXT,"
           "amount REAL,"
           "agent_id TEXT,"
           "customer_id TEXT,"
           "order_id TEXT,"
+          "seat INTEGER,"
           "name TEXT"
           ")",
         ),
@@ -58,7 +59,7 @@ class DBProvider {
     });
   }
 
-  Future addNewOrder(
+  Future createOrder(
     OrderModel orderModel,
     List<CommissionModel> commissions,
   ) async {

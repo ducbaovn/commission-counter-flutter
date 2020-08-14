@@ -1,6 +1,5 @@
 import 'package:commission_counter/datasource/local/model/commission_model.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'commission.g.dart';
 
@@ -18,6 +17,7 @@ class Commission {
   String customerId;
   String orderId;
   String name;
+  int seat;
 
   Commission({
     this.id,
@@ -32,10 +32,10 @@ class Commission {
     this.customerId,
     this.orderId,
     this.name,
+    this.seat,
   });
 
   CommissionModel get toCommissionModel => CommissionModel(
-        id: Uuid().v1(),
         storeOwnerId: storeOwnerId,
         storeId: storeId,
         updatedAt: updatedAt,
@@ -47,6 +47,7 @@ class Commission {
         customerId: customerId,
         orderId: orderId,
         name: name,
+        seat: seat,
       );
 
   factory Commission.fromJson(Map<String, dynamic> json) =>

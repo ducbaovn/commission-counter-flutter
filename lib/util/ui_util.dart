@@ -18,8 +18,8 @@ class UiUtil {
   static void showToastMsg(String msg, {bool isErrorMsg = false}) {
     Fluttertoast.showToast(
       msg: msg,
-      toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.CENTER,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
       backgroundColor: isErrorMsg ? Colors.red : AppColor.searchBoxTextColor,
       textColor: Colors.white,
       fontSize: 16.0,
