@@ -1,10 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 
 enum ProgressDialogType { Normal, Download }
 
 String _dialogMessage = "Loading...";
 double _progress = 0.0, _maxProgress = 100.0;
+
+Widget _customBody;
+
+TextAlign _textAlign = TextAlign.left;
+Alignment _progressWidgetAlignment = Alignment.centerLeft;
+
+TextDirection _direction = TextDirection.ltr;
 
 bool _isShowing = false;
 BuildContext _context, _dismissingContext;
@@ -12,13 +20,14 @@ ProgressDialogType _progressDialogType;
 bool _barrierDismissible = true, _showLogs = false;
 
 TextStyle _progressTextStyle = TextStyle(
-        color: Colors.black, fontSize: 13.0, fontWeight: FontWeight.w400),
+    color: Colors.black, fontSize: 12.0, fontWeight: FontWeight.w400),
     _messageStyle = TextStyle(
-        color: Colors.black, fontSize: 19.0, fontWeight: FontWeight.w600);
+        color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.w600);
 
 double _dialogElevation = 8.0, _borderRadius = 8.0;
 Color _backgroundColor = Colors.white;
 Curve _insetAnimCurve = Curves.easeInOut;
+EdgeInsets _dialogPadding = const EdgeInsets.all(8.0);
 
 Widget _progressWidget = Image.asset(
   'assets/double_ring_loading_io.gif',
@@ -29,24 +38,34 @@ class ProgressDialog {
   _Body _dialog;
 
   ProgressDialog(BuildContext context,
-      {ProgressDialogType type, bool isDismissible, bool showLogs}) {
+      {ProgressDialogType type,
+        bool isDismissible,
+        bool showLogs,
+        TextDirection textDirection,
+        Widget customBody}) {
     _context = context;
     _progressDialogType = type ?? ProgressDialogType.Normal;
     _barrierDismissible = isDismissible ?? true;
     _showLogs = showLogs ?? false;
+    _customBody = customBody ?? null;
+    _direction = textDirection ?? TextDirection.ltr;
   }
 
   void style(
-      {double progress,
-      double maxProgress,
-      String message,
-      Widget progressWidget,
-      Color backgroundColor,
-      TextStyle progressTextStyle,
-      TextStyle messageTextStyle,
-      double elevation,
-      double borderRadius,
-      Curve insetAnimCurve}) {
+      {Widget child,
+        double progress,
+        double maxProgress,
+        String message,
+        Widget progressWidget,
+        Color backgroundColor,
+        TextStyle progressTextStyle,
+        TextStyle messageTextStyle,
+        double elevation,
+        TextAlign textAlign,
+        double borderRadius,
+        Curve insetAnimCurve,
+        EdgeInsets padding,
+        Alignment progressWidgetAlignment}) {
     if (_isShowing) return;
     if (_progressDialogType == ProgressDialogType.Download) {
       _progress = progress ?? _progress;
@@ -61,15 +80,20 @@ class ProgressDialog {
     _dialogElevation = elevation ?? _dialogElevation;
     _borderRadius = borderRadius ?? _borderRadius;
     _insetAnimCurve = insetAnimCurve ?? _insetAnimCurve;
+    _textAlign = textAlign ?? _textAlign;
+    _progressWidget = child ?? _progressWidget;
+    _dialogPadding = padding ?? _dialogPadding;
+    _progressWidgetAlignment =
+        progressWidgetAlignment ?? _progressWidgetAlignment;
   }
 
   void update(
       {double progress,
-      double maxProgress,
-      String message,
-      Widget progressWidget,
-      TextStyle progressTextStyle,
-      TextStyle messageTextStyle}) {
+        double maxProgress,
+        String message,
+        Widget progressWidget,
+        TextStyle progressTextStyle,
+        TextStyle messageTextStyle}) {
     if (_progressDialogType == ProgressDialogType.Download) {
       _progress = progress ?? _progress;
     }
@@ -87,70 +111,62 @@ class ProgressDialog {
     return _isShowing;
   }
 
-  void dismiss() {
-    Navigator.of(_dismissingContext).pop();
-    _isShowing = false;
-//    if (_isShowing) {
-//      try {
-//        _isShowing = false;
-//        if (Navigator.of(_dismissingContext).canPop()) {
-//          Navigator.of(_dismissingContext).pop();
-//          if (_showLogs) debugPrint('ProgressDialog dismissed');
-//        } else {
-//          if (_showLogs) debugPrint('Cant pop ProgressDialog');
-//        }
-//      } catch (_) {}
-//    } else {
-//      if (_showLogs) debugPrint('ProgressDialog already dismissed');
-//    }
-  }
-
-  Future<bool> hide() {
-    if (_isShowing) {
-      try {
+  Future<bool> hide() async {
+    try {
+      if (_isShowing) {
         _isShowing = false;
-        Navigator.of(_dismissingContext).pop(true);
+        Navigator.of(_dismissingContext).pop();
         if (_showLogs) debugPrint('ProgressDialog dismissed');
         return Future.value(true);
-      } catch (_) {
+      } else {
+        if (_showLogs) debugPrint('ProgressDialog already dismissed');
         return Future.value(false);
       }
-    } else {
-      if (_showLogs) debugPrint('ProgressDialog already dismissed');
+    } catch (err) {
+      debugPrint('Seems there is an issue hiding dialog');
+      debugPrint(err.toString());
       return Future.value(false);
     }
   }
 
-  void show() {
-    if (!_isShowing) {
-      _dialog = new _Body();
-      _isShowing = true;
-
-      if (_showLogs) debugPrint('ProgressDialog shown');
-
-      showDialog<dynamic>(
-        context: _context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          _dismissingContext = context;
-          return WillPopScope(
-            onWillPop: () {
-              return Future.value(_barrierDismissible);
-            },
-            child: Dialog(
-                backgroundColor: _backgroundColor,
-                insetAnimationCurve: _insetAnimCurve,
-                insetAnimationDuration: Duration(milliseconds: 100),
-                elevation: _dialogElevation,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.all(Radius.circular(_borderRadius))),
-                child: _dialog),
-          );
-        },
-      );
-    } else {
-      if (_showLogs) debugPrint("ProgressDialog already shown/showing");
+  Future<bool> show() async {
+    try {
+      if (!_isShowing) {
+        _dialog = new _Body();
+        showDialog<dynamic>(
+          context: _context,
+          barrierDismissible: _barrierDismissible,
+          builder: (BuildContext context) {
+            _dismissingContext = context;
+            return WillPopScope(
+              onWillPop: () async => _barrierDismissible,
+              child: Dialog(
+                  backgroundColor: _backgroundColor,
+                  insetAnimationCurve: _insetAnimCurve,
+                  insetAnimationDuration: Duration(milliseconds: 100),
+                  elevation: _dialogElevation,
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(_borderRadius))),
+                  child: _dialog),
+            );
+          },
+        );
+        // Delaying the function for 200 milliseconds
+        // [Default transitionDuration of DialogRoute]
+        await Future.delayed(Duration(milliseconds: 200));
+        if (_showLogs) debugPrint('ProgressDialog shown');
+        _isShowing = true;
+        return true;
+      } else {
+        if (_showLogs) debugPrint("ProgressDialog already shown/showing");
+        return false;
+      }
+    } catch (err) {
+      _isShowing = false;
+      debugPrint('Exception while showing the dialog');
+      debugPrint(err.toString());
+      return false;
     }
   }
 }
@@ -183,37 +199,72 @@ class _BodyState extends State<_Body> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100.0,
-      child: Row(children: <Widget>[
-        const SizedBox(width: 10.0),
-        SizedBox(
-          width: 60.0,
-          height: 60.0,
-          child: _progressWidget,
-        ),
-        const SizedBox(width: 15.0),
-        Expanded(
-          child: _progressDialogType == ProgressDialogType.Normal
-              ? Text(_dialogMessage,
-                  textAlign: TextAlign.justify, style: _messageStyle)
-              : Stack(
-                  children: <Widget>[
-                    Positioned(
-                      child: Text(_dialogMessage, style: _messageStyle),
-                      top: 30.0,
-                    ),
-                    Positioned(
-                      child: Text("$_progress/$_maxProgress",
-                          style: _progressTextStyle),
-                      bottom: 10.0,
-                      right: 10.0,
-                    ),
-                  ],
-                ),
-        ),
-        const SizedBox(width: 10.0)
-      ]),
+    final loader = Align(
+      alignment: _progressWidgetAlignment,
+      child: SizedBox(
+        width: 60.0,
+        height: 60.0,
+        child: _progressWidget,
+      ),
     );
+
+    final text = Expanded(
+      child: _progressDialogType == ProgressDialogType.Normal
+          ? Text(
+        _dialogMessage,
+        textAlign: _textAlign,
+        style: _messageStyle,
+        textDirection: _direction,
+      )
+          : Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SizedBox(height: 8.0),
+            Row(
+              children: <Widget>[
+                Expanded(
+                    child: Text(
+                      _dialogMessage,
+                      style: _messageStyle,
+                      textDirection: _direction,
+                    )),
+              ],
+            ),
+            SizedBox(height: 4.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                "$_progress/$_maxProgress",
+                style: _progressTextStyle,
+                textDirection: _direction,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return _customBody ??
+        Container(
+          padding: _dialogPadding,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              // row body
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(width: 8.0),
+                  _direction == TextDirection.ltr ? loader : text,
+                  const SizedBox(width: 8.0),
+                  _direction == TextDirection.rtl ? loader : text,
+                  const SizedBox(width: 8.0)
+                ],
+              ),
+            ],
+          ),
+        );
   }
 }

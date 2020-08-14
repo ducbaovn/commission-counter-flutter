@@ -83,8 +83,12 @@ class SharedPreferencesRepo {
   }
 
   Future<User> getUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return User.fromJson(jsonDecode(prefs.getString(_USER)));
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      return User.fromJson(jsonDecode(prefs.getString(_USER)));
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> clearUserInfo() async {

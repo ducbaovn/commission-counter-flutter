@@ -5,34 +5,26 @@ import 'package:commission_counter/datasource/local/shared_preferences_repo.dart
 import 'package:commission_counter/datasource/repo/auth_repo.dart';
 import 'package:commission_counter/datasource/repo/order_repo.dart';
 import 'package:commission_counter/datasource/repo/store_repo.dart';
-import 'package:commission_counter/schema/commission.dart';
 import 'package:commission_counter/schema/order.dart';
-import 'package:commission_counter/schema/seat.dart';
 import 'package:commission_counter/schema/store.dart';
 import 'package:commission_counter/schema/user.dart';
+import 'package:flutter/widgets.dart';
 
 class CounterViewModel extends BaseViewModel {
   AuthRepo _authRepo = locator<AuthRepo>();
-  OrderRepo _orderRepo = locator<OrderRepo>();
   StoreRepo _storeRepo = locator<StoreRepo>();
+  OrderRepo _orderRepo = locator<OrderRepo>();
 
   SharedPreferencesRepo _sharedPreferencesRepo =
       locator<SharedPreferencesRepo>();
 
-  List<Seat> seats = [];
-  double totalAmount = 0;
   Store store;
 
-  Future<void> logOut() async {
-    return await _authRepo.logOut();
-  }
+  List<Order> orders = [];
 
-  void generateNewSeats() {
-    for (int i = 0; i < 9; i++) {
-      seats.add(Seat(index: i));
-    }
-    notifyListeners();
-  }
+  PageController pageController = PageController(initialPage: 0);
+
+  int currentPage;
 
   void getStoreData() async {
     startLoading();
@@ -40,99 +32,51 @@ class CounterViewModel extends BaseViewModel {
     User user = await _sharedPreferencesRepo.getUser();
 
     APIResponse<Store> res = await _storeRepo.getStoreData(user.storeId);
-
     store = res.data;
+
+    if (res.isSuccess) {
+      orders = await _orderRepo.getAllOrderByStoreId(user.storeId);
+      addBufferOrder();
+    }
+
+    currentPage = orders.length - 1;
+    pageController = PageController(initialPage: currentPage);
 
     handleAPIResult(res);
   }
 
-  void setUserForSeat(int index, User user) {
-    ///Set user code
-    seats[index].userCode = user.username;
-    seats[index].agentId = user.agentId;
-    seats[index].name = user.name;
-    seats[index].isSelected = false;
-    notifyListeners();
+  void addBufferOrder() {
+    /// Buffer one item.
+    orders.add(null);
   }
 
-  void setOrderAmount(double value) {
-    totalAmount += value;
+  void goNextPage(Order order, int index) {
+    /// Update order, because flutter will re-build item page.
+    orders[index] = order;
+
+    ///Update current page
+    this.currentPage += 1;
+
+    /// Add buffer item
+    addBufferOrder();
+
     notifyListeners();
+
+    _go2Page(currentPage);
   }
 
-  void resetOrderAmount() {
-    totalAmount = 0;
-    notifyListeners();
-  }
-
-  void resetSeat(int index) {
-    seats[index].userCode = null;
-    seats[index].name = null;
-    seats[index].isSelected = false;
-    notifyListeners();
-  }
-
-  void toggleSelectSeat(int index) {
-    seats[index].isSelected = !seats[index].isSelected;
-    notifyListeners();
-  }
-
-  Future<APIResponse> submitNewOrder() async {
-    if (totalAmount == 0) {
-      return APIResponse(
-        isSuccess: false,
-        message: 'Please select price',
-      );
+  void goBackPage() {
+    if (currentPage > 0) {
+      currentPage--;
+      _go2Page(currentPage);
     }
+  }
 
-    List<String> listCustomer = [];
+  void _go2Page(int index) {
+    pageController.jumpToPage(index);
+  }
 
-    seats.forEach((seat) {
-      if (seat.isSelected) {
-        listCustomer.add(seat.userCode);
-      }
-    });
-
-    if (listCustomer.isEmpty) {
-      return APIResponse(
-        isSuccess: false,
-        message: 'Please select customer',
-      );
-    }
-
-    User user = await _sharedPreferencesRepo.getUser();
-
-    Order order = Order(
-      storeOwnerId: user.username,
-      storeId: user.storeId,
-      adminId: user.adminId,
-      currency: store?.currency,
-      updatedAt: DateTime.now(),
-      createdAt: DateTime.now(),
-      amount: totalAmount,
-      listCustomer: listCustomer,
-    );
-
-    List<Commission> commissions = [];
-    seats.forEach((seat) {
-      if (seat.isSelected) {
-        commissions.add(Commission(
-          storeOwnerId: user.username,
-          storeId: user.storeId,
-          updatedAt: DateTime.now(),
-          createdAt: DateTime.now(),
-          adminId: user.adminId,
-          amount: totalAmount / listCustomer.length,
-          currency: store?.currency,
-          agentId: seat.agentId,
-          customerId: seat.userCode,
-        ));
-      }
-    });
-
-    return await _orderRepo.submitOrder(
-      order: order,
-      commissions: commissions,
-    );
+  Future<void> logOut() async {
+    return await _authRepo.logOut();
   }
 }
