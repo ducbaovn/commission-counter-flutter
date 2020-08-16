@@ -32,6 +32,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
 
   @override
   void initState() {
+    reportViewModel.getPasswordHashing();
     super.initState();
   }
 
@@ -44,9 +45,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
           return Scaffold(
             appBar: AppBarWidget(
               mTitle: 'Report',
-              mActions: [
-                buildLogOutIcon(reportViewModel),
-              ],
+              mActions: buildAction(reportViewModel, isOpenCounterScreen: true),
             ),
             body: Container(
               child: Column(
@@ -54,8 +53,10 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                   Expanded(
                     child: ListView(
                       children: [
-                        _buildDateFilter(),
                         _buildTotalAmount(),
+                        _buildDateFilter(),
+                        _buildStoreOwnerList(),
+                        _buildAgentList(),
                         _buildCustomerList(),
                       ],
                     ),
@@ -91,16 +92,15 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                 ),
               ),
               SizedBox(width: 20),
-              Visibility(
-                visible: reportViewModel.dateFilter != null,
-                child: Expanded(
-                  child: Text(
-                    '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.start)}-'
-                    '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.end)}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontFamily: AppFont.nunito_regular,
-                    ),
+              Expanded(
+                child: Text(
+                  reportViewModel.dateFilter == null
+                      ? 'All'
+                      : '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.start)}-'
+                          '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.end)}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: AppFont.nunito_regular,
                   ),
                 ),
               ),
@@ -143,8 +143,50 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
     );
   }
 
+  Widget _buildStoreOwnerList() {
+    return _buildUserFilterView(
+      'Select store owner',
+      reportViewModel.storeOwnerList,
+      reportViewModel.selectedStoreOwnerId,
+      UserRole.STORE_OWNER,
+      (User user) {
+        reportViewModel.setStoreOwnerId(user);
+      },
+    );
+  }
+
+  Widget _buildAgentList() {
+    return _buildUserFilterView(
+      'Select agent',
+      reportViewModel.agentList,
+      reportViewModel.selectedAgentId,
+      UserRole.AGENT,
+      (User user) {
+        reportViewModel.setAgentId(user);
+      },
+    );
+  }
+
   Widget _buildCustomerList() {
-    if (reportViewModel.customerList == null) {
+    return _buildUserFilterView(
+      'Select customer',
+      reportViewModel.customerList,
+      reportViewModel.selectedCustomerId,
+      UserRole.CUSTOMER,
+      (User user) {
+        reportViewModel.setCustomerId(user);
+      },
+    );
+  }
+
+  Widget _buildUserFilterView(
+    String lable,
+    List<User> filterUsers,
+    User selectedUser,
+    UserRole userRole,
+    Function(User) onSelectedUser,
+  ) {
+    if (filterUsers == null) {
       return Container();
     }
 
@@ -154,12 +196,12 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
           showModalBottomSheet(
             context: context,
             builder: (BuildContext context) => UserFilterScreen(
-              hostId: reportViewModel.selectedAgentId?.username,
-              userRole: UserRole.AGENT,
-              selectedUsers: [reportViewModel.selectedCustomerId],
-              onSelectedUser: (User user) {
-                reportViewModel.setCustomerId(user);
-              },
+              userRole: userRole,
+              adminId: reportViewModel.selectedAdminId?.username,
+              storeOwnerId: reportViewModel.selectedStoreOwnerId?.username,
+              agentId: reportViewModel.selectedAgentId?.username,
+              selectedUsers: [selectedUser],
+              onSelectedUser: onSelectedUser,
             ),
           );
         },
@@ -171,7 +213,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
               Icon(Icons.person_outline),
               SizedBox(width: 10),
               Text(
-                'Select customer:',
+                lable,
                 style: TextStyle(
                   fontSize: 14,
                   fontFamily: AppFont.nunito_bold,
@@ -180,7 +222,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
               SizedBox(width: 20),
               Expanded(
                 child: Text(
-                  '${reportViewModel.selectedCustomerId?.username ?? ''}',
+                  '${selectedUser?.username ?? 'All'}',
                   style: TextStyle(
                     fontSize: 14,
                     fontFamily: AppFont.nunito_regular,
@@ -188,12 +230,12 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                 ),
               ),
               Visibility(
-                visible: reportViewModel.selectedCustomerId != null,
+                visible: selectedUser != null,
                 child: IconButton(
                   padding: const EdgeInsets.all(2),
                   icon: Icon(Icons.clear),
                   onPressed: () {
-                    reportViewModel.setCustomerId(null);
+                    onSelectedUser(null);
                   },
                 ),
               ),

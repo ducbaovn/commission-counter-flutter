@@ -21,12 +21,20 @@ class UserService {
       if (documentSnapshot.data == null) {
         return APIResponse(
           isSuccess: false,
-          message: 'User not found',
+          message: 'User not found.',
+        );
+      }
+      User user = User.fromJson(documentSnapshot.data);
+
+      if (user.userRoleType != UserRole.CUSTOMER) {
+        return APIResponse(
+          isSuccess: false,
+          message: 'Please input customer user.',
         );
       }
       return APIResponse(
         isSuccess: true,
-        data: User.fromJson(documentSnapshot.data),
+        data: user,
       );
     } catch (e) {
       AppLogger.e(e);
@@ -38,39 +46,40 @@ class UserService {
   }
 
   Future<APIResponse<List<User>>> getUsers(
-      String hostId, UserRole userRole) async {
+    UserRole userRole, {
+    String adminId,
+    String storeOwnerId,
+    String agentId,
+  }) async {
     try {
-      String hostType;
-      UserRole roleType;
+      CollectionReference userCollectionReference =
+          Firestore.instance.collection('users');
+
+      Query query = userCollectionReference.where(
+        'role',
+        isEqualTo: EnumToString.parse(userRole),
+      );
 
       switch (userRole) {
-        case UserRole.ADMIN:
-          hostType = 'adminId';
-          roleType = UserRole.STORE_OWNER;
-          break;
-
         case UserRole.STORE_OWNER:
-          hostType = 'storeOwnerId';
-          roleType = UserRole.AGENT;
+          query = query.where('adminId', isEqualTo: adminId);
           break;
 
         case UserRole.AGENT:
-          hostType = 'agentId';
-          roleType = UserRole.CUSTOMER;
+          query = query
+              .where('adminId', isEqualTo: adminId)
+              .where('storeOwnerId', isEqualTo: storeOwnerId);
           break;
 
-        default:
-          return APIResponse(
-            isSuccess: false,
-            message: 'Dose not support for ${EnumToString.parse(userRole)}',
-          );
+        case UserRole.CUSTOMER:
+          query = query
+              .where('adminId', isEqualTo: adminId)
+              .where('storeOwnerId', isEqualTo: storeOwnerId)
+              .where('agentId', isEqualTo: agentId);
+          break;
       }
 
-      final userQuerySnapshot = await Firestore.instance
-          .collection('users')
-          .where(hostType, isEqualTo: hostId)
-          .where('role', isEqualTo: EnumToString.parse(roleType))
-          .getDocuments();
+      final userQuerySnapshot = await query.getDocuments();
 
       List<User> users = userQuerySnapshot.documents
           .map((item) => User.fromJson(item.data))

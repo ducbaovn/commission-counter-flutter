@@ -67,12 +67,12 @@ class CounterItemViewModel extends BaseViewModel {
   void setOrderAmount(double value) {
     totalAmount += value;
     notifyListeners();
-
     hasChange = true;
   }
 
   void resetOrderAmount() {
     totalAmount = 0;
+    hasChange = true;
     notifyListeners();
   }
 

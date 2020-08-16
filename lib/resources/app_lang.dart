@@ -10,6 +10,7 @@ class AppLang {
   static const error_username_empty = "error_username_empty";
   static const error_email_invalid = "error_email_invalid";
   static const error_password_empty = "error_password_empty";
+  static const error_password_not_match = "error_password_not_match";
   static const common_dialog_confirmation = "common_dialog_confirmation";
   static const common_load_more = "common_load_more";
   static const common_load_more_confirm = "common_load_more_confirm";
@@ -30,4 +31,5 @@ class AppLang {
   static const custom_code = "custom_code";
   static const error_user_code_empty = "error_user_code_empty";
   static const counter_screen_title = "counter_screen_title";
+  static const switch_screen_password = "switch_screen_password";
 }

@@ -14,7 +14,16 @@ class UserRepo extends BaseRepository {
   }
 
   Future<APIResponse<List<User>>> getUsers(
-      String hostId, UserRole userRole) async {
-    return apiClient.userService.getUsers(hostId, userRole);
+    UserRole userRole, {
+    String adminId,
+    String storeOwnerId,
+    String agentId,
+  }) async {
+    return apiClient.userService.getUsers(
+      userRole,
+      adminId: adminId,
+      agentId: agentId,
+      storeOwnerId: storeOwnerId,
+    );
   }
 }

@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
+import 'package:commission_counter/feature/counter/counter_screen.dart';
 import 'package:commission_counter/feature/report/report_screen.dart';
 import 'package:commission_counter/feature/splash_screen/splash_viewmodel.dart';
 import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/type/user_role.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -78,7 +80,17 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
 
     if (firebaseUser != null) {
       await sessionViewModel.getUser();
-      ReportScreen.startAndRemove(context);
+      switch (sessionViewModel.user.userRoleType) {
+        case UserRole.ADMIN:
+        case UserRole.AGENT:
+        case UserRole.CUSTOMER:
+          ReportScreen.startAndRemove(context);
+          break;
+
+        case UserRole.STORE_OWNER:
+          CounterScreen.startAndRemove(context);
+          break;
+      }
     } else {
       LoginScreen.startAndRemove(context);
     }

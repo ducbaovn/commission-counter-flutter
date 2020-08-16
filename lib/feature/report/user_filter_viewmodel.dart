@@ -9,10 +9,21 @@ class UserFilterViewModel extends BaseViewModel {
   UserRepo _userRepo = locator<UserRepo>();
   List<User> users = [];
 
-  void getUsers(String hostId, UserRole userRole) async {
+  void getUsers(
+    UserRole userRole, {
+    String adminId,
+    String storeOwnerId,
+    String agentId,
+  }) async {
     startLoading();
 
-    APIResponse<List<User>> res = await _userRepo.getUsers(hostId, userRole);
+    APIResponse<List<User>> res = await _userRepo.getUsers(
+      userRole,
+      adminId: adminId,
+      storeOwnerId: storeOwnerId,
+      agentId: agentId,
+    );
+
     users = res.data;
 
     handleAPIResult(res);

@@ -1,4 +1,5 @@
 import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/datasource/local/shared_preferences_repo.dart';
 import 'package:commission_counter/datasource/repo/auth_repo.dart';
 import 'package:flutter/widgets.dart';
 import 'package:commission_counter/logger/app_logger.dart';
@@ -8,6 +9,8 @@ import 'api_response.dart';
 
 class BaseViewModel extends ChangeNotifier {
   AuthRepo _authRepo = locator<AuthRepo>();
+  SharedPreferencesRepo _sharedPreferencesRepo =
+      locator<SharedPreferencesRepo>();
 
   ViewState _viewState = ViewState.Idle;
   String _errorMsg;
@@ -15,6 +18,8 @@ class BaseViewModel extends ChangeNotifier {
   ViewState get viewState => _viewState;
 
   String get errorMsg => _errorMsg;
+
+  String passwordHashing;
 
   void setViewState(ViewState newState) {
     _viewState = newState;
@@ -49,6 +54,11 @@ class BaseViewModel extends ChangeNotifier {
       setErrorMsg(response.message);
       notifyError();
     }
+  }
+
+  Future<void> getPasswordHashing() async {
+    passwordHashing = await _sharedPreferencesRepo.getPassword();
+    notifyListeners();
   }
 
   Future<void> logOut() async {

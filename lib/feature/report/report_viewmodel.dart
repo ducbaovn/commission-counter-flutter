@@ -3,7 +3,6 @@ import 'package:commission_counter/base/base_refreshable_viewmodel.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/datasource/local/shared_preferences_repo.dart';
 import 'package:commission_counter/datasource/repo/order_repo.dart';
-import 'package:commission_counter/datasource/repo/user_repo.dart';
 import 'package:commission_counter/schema/user.dart';
 import 'package:commission_counter/type/user_role.dart';
 import 'package:commission_counter/type/view_state.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 
 class ReportViewModel extends BaseRefreshAbleViewModel {
   OrderRepo _orderRepo = locator<OrderRepo>();
-  UserRepo _userRepo = locator<UserRepo>();
   SharedPreferencesRepo _sharedPreferencesRepo =
       locator<SharedPreferencesRepo>();
 
@@ -111,7 +109,32 @@ class ReportViewModel extends BaseRefreshAbleViewModel {
   void setAgentId(User agentId) async {
     this.selectedAgentId = agentId;
 
-    customerList = [];
+    if (agentId == null) {
+      customerList = null;
+    } else {
+      customerList = [];
+    }
+
+    selectedCustomerId = null;
+
+    notifyListeners();
+
+    getReportForCustomer();
+  }
+
+  void setStoreOwnerId(User storeOwnerId) async {
+    this.selectedStoreOwnerId = storeOwnerId;
+
+    if (storeOwnerId == null) {
+      agentList = null;
+      customerList = null;
+    } else {
+      agentList = [];
+    }
+
+    selectedAgentId = null;
+    selectedCustomerId = null;
+
     notifyListeners();
 
     getReportForCustomer();

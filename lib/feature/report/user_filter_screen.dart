@@ -12,15 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class UserFilterScreen extends StatefulWidget {
-  final String hostId;
   final UserRole userRole;
+  final String adminId;
+  final String storeOwnerId;
+  final String agentId;
   final List<User> selectedUsers;
   final Function(User) onSelectedUser;
 
   UserFilterScreen({
-    this.hostId,
     this.userRole,
-    this.selectedUsers = const [],
+    this.adminId,
+    this.storeOwnerId,
+    this.agentId,
+    this.selectedUsers,
     this.onSelectedUser,
   });
 
@@ -38,7 +42,12 @@ class _UserFilterScreenState extends BaseScreen<UserFilterScreen> {
   }
 
   void _getData() {
-    userFilterViewModel.getUsers(widget.hostId, widget.userRole);
+    userFilterViewModel.getUsers(
+      widget.userRole,
+      adminId: widget.adminId,
+      storeOwnerId: widget.storeOwnerId,
+      agentId: widget.agentId,
+    );
   }
 
   @override
@@ -60,6 +69,10 @@ class _UserFilterScreenState extends BaseScreen<UserFilterScreen> {
   }
 
   Widget _buildMainView() {
+    if (userFilterViewModel.users == null) {
+      return Container();
+    }
+
     if (userFilterViewModel.users.isEmpty) {
       return AppEmptyWidget(
         emptyMessage: 'Data is empty',

@@ -1,8 +1,12 @@
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
+import 'package:commission_counter/feature/counter/counter_screen.dart';
+import 'package:commission_counter/feature/report/report_screen.dart';
 import 'package:commission_counter/share_viewmodel/session_viewmodel.dart';
+import 'package:commission_counter/type/user_role.dart';
 import 'package:commission_counter/widget/dialog/confirm_dialog_widget.dart';
 import 'package:commission_counter/widget/dialog/error_dialog_widget.dart';
 import 'package:commission_counter/widget/dialog/success_dialog_widget.dart';
+import 'package:commission_counter/widget/input_password_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +33,25 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
   SessionViewModel get sessionViewModelListen =>
       Provider.of<SessionViewModel>(context, listen: true);
 
+  List<Widget> buildAction(
+    BaseViewModel baseViewModel, {
+    bool isOpenCounterScreen = false,
+  }) {
+    List<Widget> actions = [];
+
+    if (sessionViewModelListen.user.userRoleType == UserRole.STORE_OWNER &&
+        baseViewModel.passwordHashing != null) {
+      actions.add(buildSwitchScreenIcon(
+        baseViewModel,
+        isOpenCounterScreen: isOpenCounterScreen,
+      ));
+    }
+
+    actions.add(buildLogOutIcon(baseViewModel));
+
+    return actions;
+  }
+
   Widget buildLogOutIcon(BaseViewModel baseViewModel) {
     return IconButton(
       onPressed: () {
@@ -45,6 +68,34 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
           baseViewMode.logOut();
           LoginScreen.startAndRemove(context);
         });
+  }
+
+  Widget buildSwitchScreenIcon(
+    BaseViewModel baseViewModel, {
+    bool isOpenCounterScreen = false,
+  }) {
+    return IconButton(
+      onPressed: () {
+        showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return InputPasswordFormWidget(
+                passwordHashing: baseViewModel.passwordHashing,
+                onSubmitData: () {
+                  Navigator.pop(context);
+
+                  if (isOpenCounterScreen) {
+                    CounterScreen.startAndRemove(context);
+                  } else {
+                    ReportScreen.startAndRemove(context);
+                  }
+                },
+              );
+            });
+      },
+      icon: Icon(Icons.swap_horiz),
+    );
   }
 
   Widget buildLine() {

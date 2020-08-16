@@ -35,6 +35,7 @@ class CounterViewModel extends BaseViewModel {
     if (res.isSuccess) {
       orders = await _orderRepo.getAllOrderByStoreId(user.storeId);
       addBufferOrder();
+      addBufferOrder();
     }
 
     currentPage = orders.length - 1;

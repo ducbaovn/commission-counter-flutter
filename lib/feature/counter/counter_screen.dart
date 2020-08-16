@@ -25,6 +25,7 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
 
   @override
   void initState() {
+    counterViewModel.getPasswordHashing();
     _getData();
     super.initState();
   }
@@ -42,9 +43,7 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
           return Scaffold(
             appBar: AppBarWidget(
               mTitle: getStringFromRes(AppLang.counter_screen_title),
-              mActions: <Widget>[
-                buildLogOutIcon(counterViewModel),
-              ],
+              mActions: buildAction(counterViewModel),
             ),
             body: buildContainerViewByStatus(
               counterViewModel,

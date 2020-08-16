@@ -1,42 +1,38 @@
-import 'package:barcode_scan/barcode_scan.dart';
+import 'dart:convert';
+
 import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:commission_counter/resources/app_font.dart';
 import 'package:commission_counter/resources/app_lang.dart';
 import 'package:commission_counter/util/ui_util.dart';
 import 'package:commission_counter/util/validate_util.dart';
 import 'package:commission_counter/widget/app_textfield_widget.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 import 'app_button_widget.dart';
 
-class InputCustomerSeatFormWidget extends StatefulWidget {
-  final String userCode;
-  final Function(String) onSubmitData;
+class InputPasswordFormWidget extends StatefulWidget {
+  final String passwordHashing;
+  final VoidCallback onSubmitData;
 
-  InputCustomerSeatFormWidget({
+  InputPasswordFormWidget({
     this.onSubmitData,
-    this.userCode = '',
+    @required this.passwordHashing,
   });
 
   @override
-  InputCustomerSeatFormWidgetState createState() =>
-      InputCustomerSeatFormWidgetState();
+  InputPasswordFormWidgetState createState() => InputPasswordFormWidgetState();
 }
 
-class InputCustomerSeatFormWidgetState
-    extends State<InputCustomerSeatFormWidget> {
+class InputPasswordFormWidgetState extends State<InputPasswordFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _customerCodeController = TextEditingController();
   bool _autoValidate = false;
-  String _userCode;
+  String _password;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    _userCode = widget.userCode;
-    _customerCodeController.text = widget.userCode;
   }
 
   @override
@@ -58,7 +54,8 @@ class InputCustomerSeatFormWidgetState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  UiUtil.getStringFromRes(AppLang.custom_code, context),
+                  UiUtil.getStringFromRes(
+                      AppLang.switch_screen_password, context),
                   style:
                       TextStyle(fontFamily: AppFont.nunito_bold, fontSize: 16),
                 ),
@@ -68,18 +65,14 @@ class InputCustomerSeatFormWidgetState
                     Expanded(
                       child: AppTextFieldWidget(
                         inputType: TextInputType.text,
-                        validator: _validatePrice,
+                        obscureText: true,
+                        validator: _validatePassword,
                         textHint: UiUtil.getStringFromRes(
-                            AppLang.custom_code, context),
-                        controller: _customerCodeController,
-                        onSaved: (String price) {
-                          _userCode = price;
+                            AppLang.common_password, context),
+                        onSaved: (String password) {
+                          _password = password;
                         },
                       ),
-                    ),
-                    IconButton(
-                      onPressed: _openScanner,
-                      icon: Icon(Icons.center_focus_strong),
                     ),
                   ],
                 ),
@@ -99,17 +92,14 @@ class InputCustomerSeatFormWidgetState
     );
   }
 
-  void _openScanner() async {
-    ScanResult result = await BarcodeScanner.scan();
-
-    if (result != null) {
-      _customerCodeController.text = result.rawContent;
+  String _validatePassword(String password) {
+    if (ValidateUtil.isNullOrEmpty(password)) {
+      return UiUtil.getStringFromRes(AppLang.error_password_empty, context);
     }
-  }
 
-  String _validatePrice(String price) {
-    if (ValidateUtil.isNullOrEmpty(price)) {
-      return UiUtil.getStringFromRes(AppLang.error_user_code_empty, context);
+    String passwordHashing = md5.convert(utf8.encode(password)).toString();
+    if (passwordHashing != widget.passwordHashing) {
+      return UiUtil.getStringFromRes(AppLang.error_password_not_match, context);
     }
 
     return null;
@@ -119,7 +109,7 @@ class InputCustomerSeatFormWidgetState
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       if (widget.onSubmitData != null) {
-        widget.onSubmitData(_userCode);
+        widget.onSubmitData();
       }
     } else {
       setState(() {
