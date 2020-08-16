@@ -1,6 +1,5 @@
 import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
-import 'package:commission_counter/feature/auth/login/login_screen.dart';
 import 'package:commission_counter/feature/counter/counter_item_screen.dart';
 import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
 import 'package:commission_counter/resources/app_lang.dart';
@@ -44,10 +43,7 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
             appBar: AppBarWidget(
               mTitle: getStringFromRes(AppLang.counter_screen_title),
               mActions: <Widget>[
-                IconButton(
-                  onPressed: _logOut,
-                  icon: Icon(Icons.exit_to_app),
-                ),
+                buildLogOutIcon(counterViewModel),
               ],
             ),
             body: buildContainerViewByStatus(
@@ -80,14 +76,5 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
       physics: NeverScrollableScrollPhysics(),
       itemCount: counterViewModel.orders?.length ?? 0,
     );
-  }
-
-  void _logOut() {
-    showConfirmDialog(
-        content: getStringFromRes(AppLang.log_out_confirm),
-        onConfirm: () {
-          counterViewModel.logOut();
-          LoginScreen.startAndRemove(context);
-        });
   }
 }

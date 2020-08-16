@@ -1,3 +1,4 @@
+import 'package:commission_counter/feature/auth/login/login_screen.dart';
 import 'package:commission_counter/share_viewmodel/session_viewmodel.dart';
 import 'package:commission_counter/widget/dialog/confirm_dialog_widget.dart';
 import 'package:commission_counter/widget/dialog/error_dialog_widget.dart';
@@ -28,10 +29,22 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
   SessionViewModel get sessionViewModelListen =>
       Provider.of<SessionViewModel>(context, listen: true);
 
-  Widget buildTopSpacing(double size) {
-    return SizedBox(
-      height: size,
+  Widget buildLogOutIcon(BaseViewModel baseViewModel) {
+    return IconButton(
+      onPressed: () {
+        _logOut(baseViewModel);
+      },
+      icon: Icon(Icons.exit_to_app),
     );
+  }
+
+  void _logOut(BaseViewModel baseViewMode) {
+    showConfirmDialog(
+        content: getStringFromRes(AppLang.log_out_confirm),
+        onConfirm: () {
+          baseViewMode.logOut();
+          LoginScreen.startAndRemove(context);
+        });
   }
 
   Widget buildLine() {

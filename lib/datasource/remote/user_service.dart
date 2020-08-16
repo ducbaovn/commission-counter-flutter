@@ -37,10 +37,9 @@ class UserService {
     }
   }
 
-  Future<APIResponse<List<User>>> getCustomer(
+  Future<APIResponse<List<User>>> getUsers(
       String hostId, UserRole userRole) async {
     try {
-
       String hostType;
       UserRole roleType;
 

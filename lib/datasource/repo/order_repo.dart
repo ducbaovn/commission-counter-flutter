@@ -55,7 +55,7 @@ class OrderRepo extends BaseRepository {
     return await apiClient.orderService.getReport(
       startTime: startTime,
       endTime: endTime,
-      adminId: agentId,
+      adminId: adminId,
       storeOwnerId: storeOwnerId,
       agentId: agentId,
       customerId: customerId,

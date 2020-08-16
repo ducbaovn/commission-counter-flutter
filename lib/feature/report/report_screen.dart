@@ -1,9 +1,12 @@
 import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/report/report_viewmodel.dart';
+import 'package:commission_counter/feature/report/user_filter_screen.dart';
 import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:commission_counter/resources/app_font.dart';
+import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/type/user_role.dart';
 import 'package:commission_counter/type/view_state.dart';
 import 'package:commission_counter/util/date_time_util.dart';
 import 'package:commission_counter/util/format_uitl.dart';
@@ -29,7 +32,6 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
 
   @override
   void initState() {
-    reportViewModel.getReportForCustomer();
     super.initState();
   }
 
@@ -42,6 +44,9 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
           return Scaffold(
             appBar: AppBarWidget(
               mTitle: 'Report',
+              mActions: [
+                buildLogOutIcon(reportViewModel),
+              ],
             ),
             body: Container(
               child: Column(
@@ -51,6 +56,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                       children: [
                         _buildDateFilter(),
                         _buildTotalAmount(),
+                        _buildCustomerList(),
                       ],
                     ),
                   ),
@@ -89,12 +95,13 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                 visible: reportViewModel.dateFilter != null,
                 child: Expanded(
                   child: Text(
-                      '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.start)}-'
-                      '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.end)}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: AppFont.nunito_regular,
-                      )),
+                    '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.start)}-'
+                    '${DateTimeUtil.getDateFromFormat(reportViewModel.dateFilter?.end)}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: AppFont.nunito_regular,
+                    ),
+                  ),
                 ),
               ),
               SizedBox(width: 10),
@@ -131,6 +138,67 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
                     color: AppColor.mainColor,
                   ),
                 ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomerList() {
+    if (reportViewModel.customerList == null) {
+      return Container();
+    }
+
+    return Card(
+      child: InkWell(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) => UserFilterScreen(
+              hostId: reportViewModel.selectedAgentId?.username,
+              userRole: UserRole.AGENT,
+              selectedUsers: [reportViewModel.selectedCustomerId],
+              onSelectedUser: (User user) {
+                reportViewModel.setCustomerId(user);
+              },
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(AppDimen.app_margin),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.person_outline),
+              SizedBox(width: 10),
+              Text(
+                'Select customer:',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: AppFont.nunito_bold,
+                ),
+              ),
+              SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  '${reportViewModel.selectedCustomerId?.username ?? ''}',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontFamily: AppFont.nunito_regular,
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: reportViewModel.selectedCustomerId != null,
+                child: IconButton(
+                  padding: const EdgeInsets.all(2),
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    reportViewModel.setCustomerId(null);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

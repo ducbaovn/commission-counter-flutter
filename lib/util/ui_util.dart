@@ -7,7 +7,7 @@ class UiUtil {
   static Widget buildLine() {
     return Container(
       width: double.infinity,
-      height: 0.5,
+      height: 0.2,
       color: AppColor.searchBoxTextColor,
     );
   }

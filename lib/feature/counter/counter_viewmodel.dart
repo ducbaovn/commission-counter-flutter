@@ -2,7 +2,6 @@ import 'package:commission_counter/base/api_response.dart';
 import 'package:commission_counter/base/base_viewmodel.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/datasource/local/shared_preferences_repo.dart';
-import 'package:commission_counter/datasource/repo/auth_repo.dart';
 import 'package:commission_counter/datasource/repo/order_repo.dart';
 import 'package:commission_counter/datasource/repo/store_repo.dart';
 import 'package:commission_counter/schema/order.dart';
@@ -11,7 +10,6 @@ import 'package:commission_counter/schema/user.dart';
 import 'package:flutter/widgets.dart';
 
 class CounterViewModel extends BaseViewModel {
-  AuthRepo _authRepo = locator<AuthRepo>();
   StoreRepo _storeRepo = locator<StoreRepo>();
   OrderRepo _orderRepo = locator<OrderRepo>();
 
@@ -74,9 +72,5 @@ class CounterViewModel extends BaseViewModel {
 
   void _go2Page(int index) {
     pageController.jumpToPage(index);
-  }
-
-  Future<void> logOut() async {
-    return await _authRepo.logOut();
   }
 }

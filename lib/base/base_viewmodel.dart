@@ -1,3 +1,5 @@
+import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/datasource/repo/auth_repo.dart';
 import 'package:flutter/widgets.dart';
 import 'package:commission_counter/logger/app_logger.dart';
 import 'package:commission_counter/type/view_state.dart';
@@ -5,6 +7,8 @@ import 'package:commission_counter/type/view_state.dart';
 import 'api_response.dart';
 
 class BaseViewModel extends ChangeNotifier {
+  AuthRepo _authRepo = locator<AuthRepo>();
+
   ViewState _viewState = ViewState.Idle;
   String _errorMsg;
 
@@ -45,5 +49,9 @@ class BaseViewModel extends ChangeNotifier {
       setErrorMsg(response.message);
       notifyError();
     }
+  }
+
+  Future<void> logOut() async {
+    return await _authRepo.logOut();
   }
 }
