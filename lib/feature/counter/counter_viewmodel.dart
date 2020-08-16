@@ -5,6 +5,7 @@ import 'package:commission_counter/datasource/local/shared_preferences_repo.dart
 import 'package:commission_counter/datasource/repo/order_repo.dart';
 import 'package:commission_counter/datasource/repo/store_repo.dart';
 import 'package:commission_counter/schema/order.dart';
+import 'package:commission_counter/schema/seat.dart';
 import 'package:commission_counter/schema/store.dart';
 import 'package:commission_counter/schema/user.dart';
 import 'package:flutter/widgets.dart';
@@ -16,13 +17,15 @@ class CounterViewModel extends BaseViewModel {
   SharedPreferencesRepo _sharedPreferencesRepo =
       locator<SharedPreferencesRepo>();
 
+  int _currentPage;
+
   Store store;
 
   List<Order> orders = [];
 
-  PageController pageController = PageController(initialPage: 0);
+  List<Seat> previousSeats;
 
-  int currentPage;
+  PageController pageController = PageController(initialPage: 0);
 
   void getStoreData() async {
     startLoading();
@@ -36,10 +39,9 @@ class CounterViewModel extends BaseViewModel {
       orders = await _orderRepo.getAllOrderByStoreId(user.storeId);
       addBufferOrder();
       addBufferOrder();
+      _currentPage = orders.length - 2;
+      pageController = PageController(initialPage: _currentPage);
     }
-
-    currentPage = orders.length - 1;
-    pageController = PageController(initialPage: currentPage);
 
     handleAPIResult(res);
   }
@@ -49,25 +51,29 @@ class CounterViewModel extends BaseViewModel {
     orders.add(null);
   }
 
-  void goNextPage(Order order, int index) {
+  void goNextPage(Order order, List<Seat> seats, int index) {
     /// Update order, because flutter will re-build item page.
     orders[index] = order;
 
+    if (seats.isNotEmpty) {
+      previousSeats = seats;
+    }
+
     ///Update current page
-    this.currentPage += 1;
+    this._currentPage += 1;
 
     /// Add buffer item
     addBufferOrder();
 
     notifyListeners();
 
-    _go2Page(currentPage);
+    _go2Page(_currentPage);
   }
 
   void goBackPage() {
-    if (currentPage > 0) {
-      currentPage--;
-      _go2Page(currentPage);
+    if (_currentPage > 0) {
+      _currentPage--;
+      _go2Page(_currentPage);
     }
   }
 

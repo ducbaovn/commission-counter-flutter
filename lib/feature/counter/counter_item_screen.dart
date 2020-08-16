@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:commission_counter/base/api_response.dart';
 import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
@@ -23,13 +25,15 @@ class CounterItemScreen extends StatefulWidget {
   final int index;
   final Store store;
   final Order order;
-  final Function(Order) onNext;
+  final List<Seat> seats;
+  final Function(Order, List<Seat>) onNext;
   final VoidCallback onBack;
 
   CounterItemScreen({
     this.index,
     this.store,
     this.order,
+    this.seats,
     this.onNext,
     this.onBack,
   });
@@ -43,12 +47,16 @@ class _CounterItemScreenState extends BaseScreen<CounterItemScreen> {
 
   @override
   void initState() {
-    initData();
     super.initState();
+    initData();
   }
 
   void initData() {
-    counterItemViewModel.initData(widget.store, widget.order);
+    counterItemViewModel.initData(
+      widget.store,
+      widget.order,
+      widget.seats ?? [],
+    );
   }
 
   @override
@@ -97,7 +105,7 @@ class _CounterItemScreenState extends BaseScreen<CounterItemScreen> {
               counterItemViewModel.resetOrderAmount();
             },
             onBack: widget.onBack,
-            onNext: _submitNewOrder,
+            onNext: _createOrUpdateOrder,
           ),
         ],
       ),
@@ -188,9 +196,9 @@ class _CounterItemScreenState extends BaseScreen<CounterItemScreen> {
         });
   }
 
-  void _submitNewOrder() async {
+  void _createOrUpdateOrder() async {
     if (widget.order != null && !counterItemViewModel.hasChange) {
-      widget.onNext(widget.order);
+      widget.onNext(widget.order, []);
       return;
     }
 
@@ -202,7 +210,7 @@ class _CounterItemScreenState extends BaseScreen<CounterItemScreen> {
 
     showLoadingDialog();
 
-    APIResponse<Order> res = await counterItemViewModel.submitNewOrder();
+    APIResponse<Order> res = await counterItemViewModel.createOrUpdateOrder();
 
     hideLoadingDialog();
 
@@ -210,7 +218,11 @@ class _CounterItemScreenState extends BaseScreen<CounterItemScreen> {
       showErrorDialog(content: res.message);
     } else {
       UiUtil.showToastMsg('Successfully!');
-      widget.onNext(res.data);
+
+      widget.onNext(
+        res.data,
+        widget.order == null ? counterItemViewModel.seats : [],
+      );
     }
   }
 }

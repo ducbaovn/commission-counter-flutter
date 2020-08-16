@@ -4,6 +4,7 @@ import 'package:commission_counter/feature/counter/counter_item_screen.dart';
 import 'package:commission_counter/feature/counter/counter_viewmodel.dart';
 import 'package:commission_counter/resources/app_lang.dart';
 import 'package:commission_counter/schema/order.dart';
+import 'package:commission_counter/schema/seat.dart';
 import 'package:commission_counter/widget/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -63,8 +64,9 @@ class _CounterScreenState extends BaseScreen<CounterScreen> {
           index: index,
           store: counterViewModel.store,
           order: counterViewModel.orders[index],
-          onNext: (Order order) {
-            counterViewModel.goNextPage(order, index);
+          seats: counterViewModel.previousSeats,
+          onNext: (Order order, List<Seat> seats) async {
+            counterViewModel.goNextPage(order, seats, index);
           },
           onBack: () {
             counterViewModel.goBackPage();

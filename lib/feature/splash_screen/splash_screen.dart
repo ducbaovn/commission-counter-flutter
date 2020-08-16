@@ -31,6 +31,7 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
     Future.microtask(() => loadData());
   }
 
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(

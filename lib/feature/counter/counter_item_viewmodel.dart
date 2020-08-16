@@ -21,7 +21,7 @@ class CounterItemViewModel extends BaseViewModel {
   bool hasChange = false;
   Order order;
 
-  void initData(Store store, Order order) async {
+  void initData(Store store, Order order, List<Seat> previousSeats) async {
     startLoading();
 
     this.store = store;
@@ -40,8 +40,13 @@ class CounterItemViewModel extends BaseViewModel {
         seats[item.seat].isSelected = true;
         seats[item.seat].name = item.name;
         seats[item.seat].agentId = item.agentId;
-        seats[item.seat].agentId = item.agentId;
         seats[item.seat].userCode = item.customerId;
+      });
+    } else {
+      previousSeats.forEach((item) {
+        seats[item.index].name = item.name;
+        seats[item.index].userCode = item.userCode;
+        seats[item.index].agentId = item.agentId;
       });
     }
     stopLoading();
@@ -112,7 +117,7 @@ class CounterItemViewModel extends BaseViewModel {
     return null;
   }
 
-  Future<APIResponse<Order>> submitNewOrder() async {
+  Future<APIResponse<Order>> createOrUpdateOrder() async {
     List<String> listCustomer = [];
 
     seats.forEach((seat) {
