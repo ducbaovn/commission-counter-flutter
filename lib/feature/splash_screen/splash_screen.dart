@@ -1,18 +1,17 @@
 import 'dart:async';
 
+import 'package:commission_counter/base/base_screen.dart';
+import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/auth/login/login_screen.dart';
-import 'package:commission_counter/feature/counter/counter_screen.dart';
-import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/feature/report/report_screen.dart';
+import 'package:commission_counter/feature/splash_screen/splash_viewmodel.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:route_annotation/route_annotation.dart';
-import 'package:commission_counter/base/base_screen.dart';
-import 'package:commission_counter/base/di/locator.dart';
-import 'package:commission_counter/feature/splash_screen/splash_viewmodel.dart';
-import 'package:commission_counter/resources/app_color.dart';
-import 'package:commission_counter/resources/app_dimen.dart';
 
 @RoutePage(isInitialRoute: true)
 class SplashScreen extends StatefulWidget {
@@ -79,7 +78,7 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
 
     if (firebaseUser != null) {
       await sessionViewModel.getUser();
-      CounterScreen.startAndRemove(context);
+      ReportScreen.startAndRemove(context);
     } else {
       LoginScreen.startAndRemove(context);
     }

@@ -2,11 +2,13 @@ import 'package:commission_counter/base/api_response.dart';
 import 'package:commission_counter/feature/auth/auth_viewmodel.dart';
 import 'package:commission_counter/feature/auth/base_auth_screen.dart';
 import 'package:commission_counter/feature/counter/counter_screen.dart';
+import 'package:commission_counter/feature/report/report_screen.dart';
 import 'package:commission_counter/localization/application.dart';
 import 'package:commission_counter/main.route.dart';
 import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:commission_counter/resources/app_drawable.dart';
 import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/type/user_role.dart';
 import 'package:commission_counter/widget/keyboard_dismisser_widget.dart';
 import 'package:commission_counter/widget/login_form_widget.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +88,18 @@ class _LoginScreenState extends BaseAuthScreen<LoginScreen> {
 
     if (res.isSuccess) {
       sessionViewModel.setUser(res.data);
-      CounterScreen.startAndRemove(context);
+
+      switch (res.data.userRoleType) {
+        case UserRole.ADMIN:
+        case UserRole.AGENT:
+        case UserRole.CUSTOMER:
+          ReportScreen.startAndRemove(context);
+          break;
+
+        case UserRole.STORE_OWNER:
+          CounterScreen.startAndRemove(context);
+          break;
+      }
     } else {
       showErrorDialog(content: res.message);
     }

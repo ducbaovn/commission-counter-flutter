@@ -43,4 +43,22 @@ class OrderRepo extends BaseRepository {
         await DBProvider.db.getCommissionsByOrderId(orderId);
     return orderModelList.map((item) => item.toCommission).toList();
   }
+
+  Future<APIResponse<double>> getReport({
+    DateTime startTime,
+    DateTime endTime,
+    String adminId,
+    String storeOwnerId,
+    String agentId,
+    String customerId,
+  }) async {
+    return await apiClient.orderService.getReport(
+      startTime: startTime,
+      endTime: endTime,
+      adminId: agentId,
+      storeOwnerId: storeOwnerId,
+      agentId: agentId,
+      customerId: customerId,
+    );
+  }
 }
