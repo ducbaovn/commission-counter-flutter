@@ -31,5 +31,5 @@
   "custom_code": "Customer code",
   "error_user_code_empty": "Please input customer code",
   "counter_screen_title": "Counter",
-  "switch_screen_password": "Please input your password to switch screen"
+  "switch_screen_password": "Please input your password"
 }
