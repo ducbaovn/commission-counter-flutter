@@ -1,42 +1,14 @@
-import 'package:casino/base/api_response.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:commission_counter/schema/request/login_request.dart';
+import 'package:commission_counter/schema/user.dart';
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
 
-class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+part 'auth_service.g.dart';
 
-  Future<APIResponse<FirebaseUser>> login(String email, String password) async {
-    try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+@RestApi()
+abstract class AuthService {
+  factory AuthService(Dio dio, {String baseUrl}) = _AuthService;
 
-      return APIResponse<FirebaseUser>(data: result.user);
-    } catch (error) {
-      return APIResponse(
-        isSuccess: false,
-        message: error.message,
-      );
-    }
-  }
-
-  Future<APIResponse> resetPasswordViaEmail(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return APIResponse();
-    } catch (error) {
-      return APIResponse(
-        isSuccess: false,
-        message: error.message,
-      );
-    }
-  }
-
-  Future<FirebaseUser> getCurrentUser() {
-    return _auth.currentUser();
-  }
-
-  Future<void> logOut() async {
-    return await _auth.signOut();
-  }
+  @POST('/auth')
+  Future<User> login(@Body() LoginRequest loginRequest);
 }

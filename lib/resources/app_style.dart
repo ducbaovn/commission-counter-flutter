@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:casino/resources/app_color.dart';
+import 'package:commission_counter/resources/app_color.dart';
 
 class AppStyle {
   static var appTheme = ThemeData(
     primaryColor: AppColor.mainColor,
     accentColor: AppColor.mainColor,
     scaffoldBackgroundColor: AppColor.white,
-    platform: TargetPlatform.iOS,
+//    platform: TargetPlatform.iOS,
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: Colors.white,
       elevation: 5,

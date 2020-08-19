@@ -1,5 +1,5 @@
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_font.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_font.dart';
 import 'package:flutter/material.dart';
 
 class AppBarWidget extends AppBar {

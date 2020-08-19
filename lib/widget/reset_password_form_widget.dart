@@ -1,8 +1,8 @@
-import 'package:casino/resources/app_dimen.dart';
-import 'package:casino/resources/app_lang.dart';
-import 'package:casino/util/ui_util.dart';
-import 'package:casino/util/validate_util.dart';
-import 'package:casino/widget/app_textfield_widget.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/resources/app_lang.dart';
+import 'package:commission_counter/util/ui_util.dart';
+import 'package:commission_counter/util/validate_util.dart';
+import 'package:commission_counter/widget/app_textfield_widget.dart';
 import 'package:flutter/material.dart';
 
 class ResetPasswordFormWidget extends StatefulWidget {

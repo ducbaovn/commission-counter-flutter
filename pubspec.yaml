@@ -1,4 +1,4 @@
-name: casino
+name: commission_counter
 description: A new Flutter application.
 
 # The following line prevents the package from being accidentally published to
@@ -46,12 +46,17 @@ dependencies:
   page_indicator: ^0.3.0
   font_awesome_flutter: ^8.8.1
   validators: ^2.0.0+1
-  flutter_svg: ^0.17.4
+  flutter_svg: ^0.18.0
   firebase_core: ^0.4.0+9
   firebase_analytics: ^5.0.2
   firebase_auth: ^0.16.1
+  cloud_firestore: ^0.13.7
   double_back_to_close_app: ^1.2.0
   barcode_scan: ^3.0.1
+  retrofit: ^1.3.4
+  retrofit_generator: ^1.3.4+2
+  dio: ^3.0.9
+  uuid: ^2.2.0
   flutter_localizations:
     sdk: flutter
 
@@ -60,7 +65,7 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
-  analyzer: ^0.39.8
+  analyzer: 0.39.14
   intl: ^0.16.1
 
 

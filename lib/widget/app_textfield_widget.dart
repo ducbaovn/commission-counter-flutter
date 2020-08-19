@@ -1,8 +1,8 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_font.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_font.dart';
 
 class AppTextFieldWidget extends StatefulWidget {
   final String textHint;

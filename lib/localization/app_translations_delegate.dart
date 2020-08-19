@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:casino/localization/app_translations.dart';
-import 'package:casino/localization/application.dart';
+import 'package:commission_counter/localization/app_translations.dart';
+import 'package:commission_counter/localization/application.dart';
 
 class AppTranslationsDelegate extends LocalizationsDelegate<AppTranslations> {
   final Locale newLocale;

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:commission_counter/datasource/local/model/commission_model.dart';
+import 'package:commission_counter/datasource/local/model/order_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,74 +14,133 @@ class DBProvider {
 
   Database _database;
 
-  String _dbName = 'app.db';
-
   Future<Database> get database async {
     if (_database != null) return _database;
-    // if _database is null we instantiate it
     _database = await initDB();
     return _database;
   }
 
-  _copyDbIfNeed() async {
-//    try {
-//      Directory documentsDirectory = await getApplicationDocumentsDirectory();
-//      String path = join(documentsDirectory.path, _dbName);
-//
-//      if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
-//        ByteData data = await rootBundle.load(join('assets', _dbName));
-//        List<int> bytes =
-//            data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-//
-//        await new File(path).writeAsBytes(bytes);
-//      }
-//    } catch (e) {
-//      AppLogger.e(e);
-//    }
-  }
-
-//
   initDB() async {
-    await _copyDbIfNeed();
-
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, _dbName);
-    return await openDatabase(path,
-        version: 1,
-        onOpen: (db) {},
-        onCreate: (Database db, int version) async {});
+    String path = join(documentsDirectory.path, "commission_counter_test.db");
+    return await openDatabase(path, version: 1, onOpen: (db) {},
+        onCreate: (Database db, int version) async {
+      await Future.wait([
+        db.execute(
+          "CREATE TABLE ${OrderModel.tableName} ("
+          "id TEXT PRIMARY KEY,"
+          "store_owner_id TEXT,"
+          "store_id TEXT,"
+          "admin_id TEXT,"
+          "currency TEXT,"
+          "updated_at TEXT,"
+          "created_at TEXT,"
+          "amount REAL"
+          ")",
+        ),
+        db.execute(
+          "CREATE TABLE ${CommissionModel.tableName} ("
+          "id TEXT PRIMARY KEY,"
+          "store_owner_id TEXT,"
+          "store_id TEXT,"
+          "admin_id TEXT,"
+          "currency TEXT,"
+          "updated_at TEXT,"
+          "created_at TEXT,"
+          "amount REAL,"
+          "agent_id TEXT,"
+          "customer_id TEXT,"
+          "order_id TEXT,"
+          "seat INTEGER,"
+          "is_selected INTEGER,"
+          "name TEXT"
+          ")",
+        ),
+      ]);
+    });
   }
 
-//  Future<List<LocalAddress>> getAllProvince() async {
-//    try {
-//      final db = await database;
-//      var res = await db.query('province');
-//      List<LocalAddress> list = res.isNotEmpty
-//          ? res.map((c) => LocalAddress.fromJson(c)).toList()
-//          : [];
-//      return list;
-//    } catch (error) {
-//      AppLogger.e(error);
-//      return [];
-//    }
-//  }
-//
-//  Future<List<LocalAddress>> getDistrictByProvinceCode(
-//      String provinceCode) async {
-//    final db = await database;
-//    var res = await db.query('district',
-//        where: "province_code = ?", whereArgs: [provinceCode]);
-//    List<LocalAddress> list =
-//        res.isNotEmpty ? res.map((c) => LocalAddress.fromJson(c)).toList() : [];
-//    return list;
-//  }
-//
-//  Future<List<LocalAddress>> getTownByDistrictCode(String districtCode) async {
-//    final db = await database;
-//    var res = await db
-//        .query('town', where: "district_code = ?", whereArgs: [districtCode]);
-//    List<LocalAddress> list =
-//        res.isNotEmpty ? res.map((c) => LocalAddress.fromJson(c)).toList() : [];
-//    return list;
-//  }
+  Future createOrder(
+    OrderModel orderModel,
+    List<CommissionModel> commissions,
+  ) async {
+    final db = await database;
+
+    Batch batch = db.batch();
+
+    batch.insert(
+      OrderModel.tableName,
+      orderModel.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    commissions.forEach((commissionsItem) {
+      batch.insert(
+        CommissionModel.tableName,
+        commissionsItem.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+
+    batch.commit();
+  }
+
+  Future<void> updateOrder(
+    OrderModel orderModel,
+    List<CommissionModel> commissions,
+  ) async {
+    final db = await database;
+    Batch batch = db.batch();
+
+    /// Update order
+    batch.update(
+      OrderModel.tableName,
+      orderModel.toJson(),
+      where: "id = ?",
+      whereArgs: [orderModel.id],
+    );
+
+    /// Delete old commission
+    batch.delete(
+      CommissionModel.tableName,
+      where: "order_id = ?",
+      whereArgs: [orderModel.id],
+    );
+
+    /// Add new commission
+    commissions.forEach((commissionsItem) {
+      batch.insert(
+        CommissionModel.tableName,
+        commissionsItem.toJson(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    });
+
+    batch.commit();
+  }
+
+  Future<List<OrderModel>> getAllOrderByStoreId(String storeId) async {
+    final db = await database;
+    var res = await db.query(
+      OrderModel.tableName,
+      where: "store_id = ?",
+      whereArgs: [storeId],
+    );
+    List<OrderModel> list =
+        res.isNotEmpty ? res.map((c) => OrderModel.fromJson(c)).toList() : [];
+    return list;
+  }
+
+  Future<List<CommissionModel>> getCommissionsByOrderId(String orderId) async {
+    final db = await database;
+    var res = await db.query(
+      CommissionModel.tableName,
+      where: "order_id = ?",
+      whereArgs: [orderId],
+    );
+    List<CommissionModel> list = res.isNotEmpty
+        ? res.map((c) => CommissionModel.fromJson(c)).toList()
+        : [];
+    return list;
+  }
 }

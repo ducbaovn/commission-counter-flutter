@@ -5,7 +5,8 @@ const INVALID_MOBILE_PATTERN = r'^[0-9]+$';
 const CARD_NUMBER_LENGTH = 16;
 
 class ValidateUtil {
-  static bool isNullOrEmpty(String value) => value == null || value.isEmpty;
+  static bool isNullOrEmpty(String value) =>
+      value == null || value.trim().isEmpty;
 
   static bool isValidName(String value) {
     if (value == null) {

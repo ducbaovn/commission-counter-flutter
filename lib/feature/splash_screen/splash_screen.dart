@@ -1,17 +1,19 @@
 import 'dart:async';
 
-import 'package:casino/feature/auth/login/login_screen.dart';
-import 'package:casino/feature/counter/counter_screen.dart';
+import 'package:commission_counter/base/base_screen.dart';
+import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/feature/auth/login/login_screen.dart';
+import 'package:commission_counter/feature/counter/counter_screen.dart';
+import 'package:commission_counter/feature/report/report_screen.dart';
+import 'package:commission_counter/feature/splash_screen/splash_viewmodel.dart';
+import 'package:commission_counter/resources/app_color.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/type/user_role.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:route_annotation/route_annotation.dart';
-import 'package:casino/base/base_screen.dart';
-import 'package:casino/base/di/locator.dart';
-import 'package:casino/feature/splash_screen/splash_viewmodel.dart';
-import 'package:casino/resources/app_color.dart';
-import 'package:casino/resources/app_dimen.dart';
 
 @RoutePage(isInitialRoute: true)
 class SplashScreen extends StatefulWidget {
@@ -28,6 +30,7 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
 
     Future.microtask(() => loadData());
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +77,21 @@ class _SplashScreenState extends BaseScreen<SplashScreen> {
   }
 
   void onDoneLoading() async {
-    FirebaseUser user = await splashViewModel.getUser();
+    FirebaseUser firebaseUser = await splashViewModel.getFirebaseUser();
 
-    if (user != null) {
-      CounterScreen.startAndRemove(context);
+    if (firebaseUser != null) {
+      await sessionViewModel.getUser();
+      switch (sessionViewModel.user.userRoleType) {
+        case UserRole.ADMIN:
+        case UserRole.AGENT:
+        case UserRole.CUSTOMER:
+          ReportScreen.startAndRemove(context);
+          break;
+
+        case UserRole.STORE_OWNER:
+          CounterScreen.startAndRemove(context);
+          break;
+      }
     } else {
       LoginScreen.startAndRemove(context);
     }

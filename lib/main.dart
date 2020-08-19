@@ -1,14 +1,13 @@
+import 'package:commission_counter/base/di/locator.dart';
+import 'package:commission_counter/localization/application.dart';
+import 'package:commission_counter/main.route.dart';
+import 'package:commission_counter/share_viewmodel/session_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:route_annotation/route_annotation.dart';
-import 'package:casino/base/di/locator.dart';
-import 'package:casino/feature/splash_screen/splash_viewmodel.dart';
-import 'package:casino/localization/application.dart';
-import 'package:casino/main.route.dart';
 
-import 'datasource/remote/api_client.dart';
 import 'localization/app_translations_delegate.dart';
 import 'resources/app_style.dart';
 
@@ -49,7 +48,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SplashScreenViewModel()),
+        ChangeNotifierProvider(create: (_) => SessionViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

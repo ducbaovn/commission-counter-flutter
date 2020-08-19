@@ -1,14 +1,16 @@
-import 'package:casino/base/api_response.dart';
-import 'package:casino/feature/auth/auth_viewmodel.dart';
-import 'package:casino/feature/auth/base_auth_screen.dart';
-import 'package:casino/feature/counter/counter_screen.dart';
-import 'package:casino/localization/application.dart';
-import 'package:casino/main.route.dart';
-import 'package:casino/resources/app_dimen.dart';
-import 'package:casino/resources/app_drawable.dart';
-import 'package:casino/widget/keyboard_dismisser_widget.dart';
-import 'package:casino/widget/login_form_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:commission_counter/base/api_response.dart';
+import 'package:commission_counter/feature/auth/auth_viewmodel.dart';
+import 'package:commission_counter/feature/auth/base_auth_screen.dart';
+import 'package:commission_counter/feature/counter/counter_screen.dart';
+import 'package:commission_counter/feature/report/report_screen.dart';
+import 'package:commission_counter/localization/application.dart';
+import 'package:commission_counter/main.route.dart';
+import 'package:commission_counter/resources/app_dimen.dart';
+import 'package:commission_counter/resources/app_drawable.dart';
+import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/type/user_role.dart';
+import 'package:commission_counter/widget/keyboard_dismisser_widget.dart';
+import 'package:commission_counter/widget/login_form_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +23,8 @@ class LoginScreen extends StatefulWidget {
   }
 
   static void startAndRemove(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        ROUTE_LOGIN_SCREEN, (Route<dynamic> route) => false);
   }
 
   static void startByNavigatorKey() {
@@ -77,15 +79,27 @@ class _LoginScreenState extends BaseAuthScreen<LoginScreen> {
     );
   }
 
-  void _login(String email, String password) async {
+  void _login(String username, String password) async {
     showLoadingDialog();
 
-    APIResponse<FirebaseUser> res = await authViewModel.login(email, password);
+    APIResponse<User> res = await authViewModel.login(username, password);
 
     hideLoadingDialog();
 
     if (res.isSuccess) {
-      CounterScreen.startAndRemove(context);
+      sessionViewModel.setUser(res.data);
+
+      switch (res.data.userRoleType) {
+        case UserRole.ADMIN:
+        case UserRole.AGENT:
+        case UserRole.CUSTOMER:
+          ReportScreen.startAndRemove(context);
+          break;
+
+        case UserRole.STORE_OWNER:
+          CounterScreen.startAndRemove(context);
+          break;
+      }
     } else {
       showErrorDialog(content: res.message);
     }
