@@ -8,6 +8,7 @@ import 'package:commission_counter/schema/seat.dart';
 import 'package:commission_counter/widget/app_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:commission_counter/main.route.dart';
 import 'package:route_annotation/route_annotation.dart';
 
 @RoutePage()
@@ -18,6 +19,10 @@ class CounterScreen extends StatefulWidget {
   static void startAndRemove(BuildContext context) {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => CounterScreen()));
+  }
+
+  static void start(BuildContext context) {
+    Navigator.of(context).pushNamed(ROUTE_COUNTER_SCREEN);
   }
 }
 

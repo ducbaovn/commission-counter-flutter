@@ -1,9 +1,11 @@
+import 'package:commission_counter/converter/local_datetime_converter.dart';
 import 'package:commission_counter/schema/order.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'order_model.g.dart';
 
 @JsonSerializable()
+@LocalDateTimeConverter()
 class OrderModel {
   String id;
   @JsonKey(name: 'store_owner_id')

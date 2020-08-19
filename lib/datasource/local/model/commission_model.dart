@@ -1,9 +1,11 @@
+import 'package:commission_counter/converter/local_datetime_converter.dart';
 import 'package:commission_counter/schema/commission.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'commission_model.g.dart';
 
 @JsonSerializable()
+@LocalDateTimeConverter()
 class CommissionModel {
   String id;
 
@@ -35,6 +37,9 @@ class CommissionModel {
   @JsonKey(name: 'order_id')
   String orderId;
 
+  @JsonKey(name: 'is_selected')
+  int isSelected;
+
   String name;
 
   int seat;
@@ -53,6 +58,7 @@ class CommissionModel {
     this.orderId,
     this.name,
     this.seat,
+    this.isSelected,
   });
 
   Commission get toCommission => Commission(
@@ -69,6 +75,7 @@ class CommissionModel {
         orderId: orderId,
         name: name,
         seat: seat,
+        isSelected: isSelected == 1 ? true : false,
       );
 
   static String tableName = 'commissions';

@@ -1,7 +1,7 @@
 import 'package:flutter_money_formatter/flutter_money_formatter.dart';
 
 class FormatUtil {
-  static String formatCurrency(double amount, {bool hasUnit = true}) {
+  static String formatCurrency(double amount) {
     if (amount == null) {
       return 'N/A';
     }
@@ -11,12 +11,10 @@ class FormatUtil {
           thousandSeparator: ',',
           decimalSeparator: '.',
           symbolAndNumberSeparator: ' ',
-          fractionDigits: 3,
+          fractionDigits: 2,
           compactFormatType: CompactFormatType.short,
         ));
 
-    return hasUnit
-        ? '${fmf.output.withoutFractionDigits} đ'
-        : fmf.output.withoutFractionDigits;
+    return fmf.output.nonSymbol.replaceAll('.00', '');
   }
 }

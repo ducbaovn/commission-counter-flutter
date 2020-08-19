@@ -10,6 +10,8 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
+        android:allowBackup="false"
+        android:fullBackupOnly="false"
         android:icon="@mipmap/ic_launcher"
         android:label="commission_counter">
         <activity

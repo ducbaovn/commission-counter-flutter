@@ -2,6 +2,7 @@ import 'package:commission_counter/base/base_screen.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/feature/report/report_viewmodel.dart';
 import 'package:commission_counter/feature/report/user_filter_screen.dart';
+import 'package:commission_counter/main.route.dart';
 import 'package:commission_counter/resources/app_color.dart';
 import 'package:commission_counter/resources/app_dimen.dart';
 import 'package:commission_counter/resources/app_font.dart';
@@ -11,8 +12,9 @@ import 'package:commission_counter/type/view_state.dart';
 import 'package:commission_counter/util/date_time_util.dart';
 import 'package:commission_counter/util/format_uitl.dart';
 import 'package:commission_counter/widget/app_bar_widget.dart';
-import 'package:commission_counter/widget/app_button_widget.dart';
+import 'package:commission_counter/extension/number_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:route_annotation/route_annotation.dart';
 
@@ -24,6 +26,10 @@ class ReportScreen extends StatefulWidget {
   static void startAndRemove(BuildContext context) {
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => ReportScreen()));
+  }
+
+  static void start(BuildContext context) {
+    Navigator.of(context).pushNamed(ROUTE_REPORT_SCREEN);
   }
 }
 
@@ -45,23 +51,27 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
           return Scaffold(
             appBar: AppBarWidget(
               mTitle: 'Report',
+              hideBackButton: true,
               mActions: buildAction(reportViewModel, isOpenCounterScreen: true),
             ),
-            body: Container(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        _buildTotalAmount(),
-                        _buildDateFilter(),
-                        _buildStoreOwnerList(),
-                        _buildAgentList(),
-                        _buildCustomerList(),
-                      ],
+            body: WillPopScope(
+              onWillPop: _willPopCallback,
+              child: Container(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          _buildTotalAmount(),
+                          _buildDateFilter(),
+                          _buildStoreOwnerList(),
+                          _buildAgentList(),
+                          _buildCustomerList(),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -128,10 +138,7 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
           child: reportViewModel.amountReportLoading == ViewState.Loading
               ? getLoadingView()
               : Text(
-                  '${FormatUtil.formatCurrency(
-                    reportViewModel.totalAmount,
-                    hasUnit: false,
-                  )}',
+                  '${FormatUtil.formatCurrency(reportViewModel.totalAmount.roundDouble(2))}',
                   style: TextStyle(
                     fontFamily: AppFont.nunito_bold,
                     fontSize: 30,
@@ -265,5 +272,10 @@ class _ReportScreenState extends BaseScreen<ReportScreen> {
         end: dateTimeRangePicker.end,
       ));
     }
+  }
+
+  Future<bool> _willPopCallback() async {
+    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    return false;
   }
 }

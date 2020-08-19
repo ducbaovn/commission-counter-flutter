@@ -1,9 +1,12 @@
+import 'package:commission_counter/converter/firebase_datetime_converter.dart';
+import 'package:commission_counter/converter/local_datetime_converter.dart';
 import 'package:commission_counter/datasource/local/model/commission_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'commission.g.dart';
 
 @JsonSerializable()
+@FirebaseDateTimeConverter()
 class Commission {
   String id;
   String storeOwnerId;
@@ -19,6 +22,9 @@ class Commission {
   String name;
   int seat;
 
+  @JsonKey(ignore: true)
+  bool isSelected;
+
   Commission({
     this.id,
     this.storeOwnerId,
@@ -33,6 +39,7 @@ class Commission {
     this.orderId,
     this.name,
     this.seat,
+    this.isSelected,
   });
 
   CommissionModel get toCommissionModel => CommissionModel(
@@ -48,6 +55,7 @@ class Commission {
         orderId: orderId,
         name: name,
         seat: seat,
+        isSelected: isSelected ? 1 : 0,
       );
 
   factory Commission.fromJson(Map<String, dynamic> json) =>

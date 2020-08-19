@@ -1,9 +1,12 @@
+import 'package:commission_counter/converter/firebase_datetime_converter.dart';
+import 'package:commission_counter/converter/local_datetime_converter.dart';
 import 'package:commission_counter/datasource/local/model/order_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'order.g.dart';
 
 @JsonSerializable()
+@FirebaseDateTimeConverter()
 class Order {
   String id;
   String storeOwnerId;

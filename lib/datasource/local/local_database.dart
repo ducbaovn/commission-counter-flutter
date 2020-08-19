@@ -22,7 +22,7 @@ class DBProvider {
 
   initDB() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, "commission_counter.db");
+    String path = join(documentsDirectory.path, "commission_counter_test.db");
     return await openDatabase(path, version: 1, onOpen: (db) {},
         onCreate: (Database db, int version) async {
       await Future.wait([
@@ -52,6 +52,7 @@ class DBProvider {
           "customer_id TEXT,"
           "order_id TEXT,"
           "seat INTEGER,"
+          "is_selected INTEGER,"
           "name TEXT"
           ")",
         ),

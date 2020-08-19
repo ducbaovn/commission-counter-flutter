@@ -23,8 +23,8 @@ class LoginScreen extends StatefulWidget {
   }
 
   static void startAndRemove(BuildContext context) {
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        ROUTE_LOGIN_SCREEN, (Route<dynamic> route) => false);
   }
 
   static void startByNavigatorKey() {

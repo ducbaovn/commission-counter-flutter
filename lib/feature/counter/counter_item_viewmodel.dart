@@ -8,6 +8,7 @@ import 'package:commission_counter/schema/order.dart';
 import 'package:commission_counter/schema/seat.dart';
 import 'package:commission_counter/schema/store.dart';
 import 'package:commission_counter/schema/user.dart';
+import 'package:commission_counter/extension/number_extension.dart';
 
 class CounterItemViewModel extends BaseViewModel {
   OrderRepo _orderRepo = locator<OrderRepo>();
@@ -37,7 +38,7 @@ class CounterItemViewModel extends BaseViewModel {
 
       /// Map commissions to seats
       commissions.forEach((item) {
-        seats[item.seat].isSelected = true;
+        seats[item.seat].isSelected = item.isSelected;
         seats[item.seat].name = item.name;
         seats[item.seat].agentId = item.agentId;
         seats[item.seat].userCode = item.customerId;
@@ -128,34 +129,40 @@ class CounterItemViewModel extends BaseViewModel {
 
     User user = await _sharedPreferencesRepo.getUser();
 
+    double amount = totalAmount / listCustomer.length;
+
+    DateTime createdAt = this.order?.createdAt ?? DateTime.now();
+    DateTime updatedAt = DateTime.now();
+
     Order order = Order(
       id: this.order?.id ?? null,
       storeOwnerId: user.username,
       storeId: user.storeId,
       adminId: user.adminId,
       currency: store?.currency,
-      updatedAt: DateTime.now(),
-      createdAt: DateTime.now(),
+      updatedAt: updatedAt,
+      createdAt: createdAt,
       amount: totalAmount,
       listCustomer: listCustomer,
     );
 
     List<Commission> commissions = [];
     seats.forEach((seat) {
-      if (seat.isSelected) {
+      if (seat.userCode != null) {
         commissions.add(
           Commission(
             storeOwnerId: user.username,
             storeId: user.storeId,
-            updatedAt: DateTime.now(),
-            createdAt: DateTime.now(),
+            updatedAt: updatedAt,
+            createdAt: createdAt,
             adminId: user.adminId,
-            amount: totalAmount / listCustomer.length,
+            amount: seat.isSelected ? amount : 0,
             currency: store?.currency,
             agentId: seat.agentId,
             customerId: seat.userCode,
             name: seat.name,
             seat: seat.index,
+            isSelected: seat.isSelected,
           ),
         );
       }

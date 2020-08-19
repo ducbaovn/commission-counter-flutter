@@ -5,6 +5,7 @@ import 'package:commission_counter/datasource/local/model/commission_model.dart'
 import 'package:commission_counter/logger/app_logger.dart';
 import 'package:commission_counter/schema/commission.dart';
 import 'package:commission_counter/schema/order.dart';
+import 'package:uuid/uuid.dart';
 
 class OrderService {
   Future<APIResponse<Order>> createOrder({
@@ -28,12 +29,16 @@ class OrderService {
       commissions.forEach((commission) {
         commission.orderId = orderId;
 
-        DocumentReference commissionsDocRef =
-            Firestore.instance.collection('commissions').document();
-        batch.setData(commissionsDocRef, commission.toJson());
+        if (commission.isSelected) {
+          DocumentReference commissionsDocRef =
+              Firestore.instance.collection('commissions').document();
+          batch.setData(commissionsDocRef, commission.toJson());
 
-        commissionModels.add(
-            commission.toCommissionModel..id = commissionsDocRef.documentID);
+          commissionModels.add(
+              commission.toCommissionModel..id = commissionsDocRef.documentID);
+        } else {
+          commissionModels.add(commission.toCommissionModel..id = Uuid().v1());
+        }
       });
 
       await batch.commit();
@@ -84,13 +89,17 @@ class OrderService {
       commissions.forEach((commission) {
         commission.orderId = order.id;
 
-        DocumentReference commissionsDocRef =
-            commissionsCollectionReference.document();
+        if (commission.isSelected) {
+          DocumentReference commissionsDocRef =
+              Firestore.instance.collection('commissions').document();
 
-        batch.setData(commissionsDocRef, commission.toJson());
+          batch.setData(commissionsDocRef, commission.toJson());
 
-        commissionModels.add(
-            commission.toCommissionModel..id = commissionsDocRef.documentID);
+          commissionModels.add(
+              commission.toCommissionModel..id = commissionsDocRef.documentID);
+        } else {
+          commissionModels.add(commission.toCommissionModel..id = Uuid().v1());
+        }
       });
 
       await batch.commit();
@@ -124,11 +133,11 @@ class OrderService {
 
       ///TODO: find other away to init query.
       Query query = commissionsCollectionReference.where('createdAt',
-          isLessThanOrEqualTo: DateTime.now().toIso8601String());
+          isLessThanOrEqualTo: DateTime.now().toUtc());
 
       if (startTime != null) {
-        query = query.where('createdAt',
-            isGreaterThanOrEqualTo: startTime.toIso8601String());
+        query =
+            query.where('createdAt', isGreaterThanOrEqualTo: startTime.toUtc());
       }
 
       if (endTime != null) {
@@ -139,8 +148,7 @@ class OrderService {
           23,
           59,
         );
-        query = query.where('createdAt',
-            isLessThanOrEqualTo: endTime.toIso8601String());
+        query = query.where('createdAt', isLessThanOrEqualTo: endTime.toUtc());
       }
 
       if (adminId != null) {

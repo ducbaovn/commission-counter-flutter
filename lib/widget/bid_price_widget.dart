@@ -44,10 +44,7 @@ class BidPriceWidget extends StatelessWidget {
             },
             child: Center(
               child: Text(
-                FormatUtil.formatCurrency(
-                  value ?? 0,
-                  hasUnit: false,
-                ),
+                FormatUtil.formatCurrency(value ?? 0),
                 style: TextStyle(
                   fontSize: 30,
                   fontFamily: AppFont.nunito_bold,
@@ -64,10 +61,7 @@ class BidPriceWidget extends StatelessWidget {
   Widget _buildTotalBidPrice() {
     return Center(
       child: Text(
-        FormatUtil.formatCurrency(
-          totalAmount?.toDouble() ?? 0,
-          hasUnit: false,
-        ),
+        FormatUtil.formatCurrency(totalAmount?.toDouble() ?? 0),
         style: TextStyle(
           fontSize: 32,
           fontFamily: AppFont.nunito_bold,

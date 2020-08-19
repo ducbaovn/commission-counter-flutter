@@ -84,11 +84,10 @@ abstract class BaseScreen<T extends StatefulWidget> extends State<T> {
                 passwordHashing: baseViewModel.passwordHashing,
                 onSubmitData: () {
                   Navigator.pop(context);
-
                   if (isOpenCounterScreen) {
-                    CounterScreen.startAndRemove(context);
+                    Navigator.of(context).pop();
                   } else {
-                    ReportScreen.startAndRemove(context);
+                    ReportScreen.start(context);
                   }
                 },
               );

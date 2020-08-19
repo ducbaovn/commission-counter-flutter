@@ -3,6 +3,7 @@ import 'package:commission_counter/base/base_refreshable_viewmodel.dart';
 import 'package:commission_counter/base/di/locator.dart';
 import 'package:commission_counter/datasource/local/shared_preferences_repo.dart';
 import 'package:commission_counter/datasource/repo/order_repo.dart';
+import 'package:commission_counter/datasource/repo/store_repo.dart';
 import 'package:commission_counter/schema/user.dart';
 import 'package:commission_counter/type/user_role.dart';
 import 'package:commission_counter/type/view_state.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/material.dart';
 
 class ReportViewModel extends BaseRefreshAbleViewModel {
   OrderRepo _orderRepo = locator<OrderRepo>();
+  StoreRepo _storeRepo = locator<StoreRepo>();
+
   SharedPreferencesRepo _sharedPreferencesRepo =
       locator<SharedPreferencesRepo>();
 
@@ -82,7 +85,7 @@ class ReportViewModel extends BaseRefreshAbleViewModel {
       customerId: selectedCustomerId?.username,
     );
 
-    totalAmount = res.data;
+    totalAmount = res.data ?? 0;
 
     amountReportLoading = ViewState.Loaded;
 
