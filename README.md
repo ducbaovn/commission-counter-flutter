@@ -1,5 +1,3 @@
-# eway project
-
 
 ## Project Structure
 
