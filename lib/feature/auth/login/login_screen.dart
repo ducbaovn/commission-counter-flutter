@@ -65,7 +65,7 @@ class _LoginScreenState extends BaseAuthScreen<LoginScreen> {
     return ListView(
       children: <Widget>[
         SizedBox(height: AppDimen.app_margin),
-        SvgPicture.asset(
+        Image.asset(
           AppDrawable.icon_logo,
           width: 130,
           height: 130,

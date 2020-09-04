@@ -1,42 +1,35 @@
 {
   "project_info": {
-    "project_number": "593244175528",
-    "firebase_url": "https://commission-counter.firebaseio.com",
-    "project_id": "commission-counter",
-    "storage_bucket": "commission-counter.appspot.com"
+    "project_number": "561551537204",
+    "firebase_url": "https://commission-counter-2acfe.firebaseio.com",
+    "project_id": "commission-counter-2acfe",
+    "storage_bucket": "commission-counter-2acfe.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:593244175528:android:191fc2685c0279e701d69d",
+        "mobilesdk_app_id": "1:561551537204:android:b8cd2c7be24126a2498661",
         "android_client_info": {
           "package_name": "com.app.commissioncounter"
         }
       },
       "oauth_client": [
         {
-          "client_id": "593244175528-3cvqncatd27t1ro9geth3k0kkee3qmht.apps.googleusercontent.com",
+          "client_id": "561551537204-3tf7vsbjhcco6ov925llhriluh5d58ig.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAMLG2fPiYN-DPPi4aVzwHaQbh18Q3hZuo"
+          "current_key": "AIzaSyCgYJxYRSQyvx4MP70nGl5-ZLYOd2ni2tU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "593244175528-3cvqncatd27t1ro9geth3k0kkee3qmht.apps.googleusercontent.com",
+              "client_id": "561551537204-3tf7vsbjhcco6ov925llhriluh5d58ig.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "593244175528-qnd5qgrtdv7rh3uk176r7oh9p5ukmig1.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.app.commissioncounter"
-              }
             }
           ]
         }
